@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "A node.js library for connecting to and recieving data from Bambu Lab printers through their MQTT servers.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/THE-SIMPLE-MARK/bambu-node.git"
@@ -21,6 +18,13 @@
     "types",
     "client"
   ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write ."
+  },
   "author": "SIMPLE MARK",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.1.1"
+  }
 }
