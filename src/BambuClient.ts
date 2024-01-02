@@ -219,15 +219,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		console.log("onMessage: ", { topic, key, data: JSON.stringify(data[key]) })
 
 		if (isPrintMessage(data)) {
-			if (isPushStatusCommand(data.print)) {
-				// merge the new data with the old data
-				this._printerData = {
-					...this._printerData,
-					...data.print,
-				}
+			if (isPushAllCommand(data.print) || isPushStatusCommand(data.print)) {
+				// this includes any general data updates
 
-				this.emit("printerDataUpdate", this._printerData)
-			} else if (isPushAllCommand(data.print)) {
 				// merge the new data with the old data
 				this._printerData = {
 					...this._printerData,
