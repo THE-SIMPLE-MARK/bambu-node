@@ -19,4 +19,8 @@ export abstract class AbstractCommand implements CommandInterface {
 			},
 		})
 	}
+
+	ownsResponse() {
+		return false
+	}
 }
