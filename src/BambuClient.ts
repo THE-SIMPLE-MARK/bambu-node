@@ -10,7 +10,6 @@ import {
 	isPushAllCommand,
 	isPushStatusCommand,
 	PrintMessageCommand,
-	VersionModule,
 } from "src/responses"
 import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
 
