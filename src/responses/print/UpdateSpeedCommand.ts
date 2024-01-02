@@ -1,12 +1,12 @@
 import type { PrintMessageCommand } from "./PrintMessage"
-import type { IntRange, StringNumber } from "src/types"
+import type { NumberRange, StringNumber } from "src/types"
 import { PushStatusCommand } from "./PushStatusCommand"
 import { SpeedLevel } from "./PushAllCommand"
 
 export interface UpdateSpeedCommand extends PushStatusCommand {
 	param: string
 	spd_lvl: SpeedLevel
-	spd_mag: IntRange<50, 201>
+	spd_mag: NumberRange<50, 201>
 	reason: "SUCCESS" | "FAILURE" | string
 	result: "SUCCESS" | "FAILURE" | string
 	sequence_id: StringNumber

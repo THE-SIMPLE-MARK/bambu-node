@@ -1,13 +1,13 @@
 import { GCodeCommand } from "./GCodeCommand"
-import type { IntRange } from "src/types"
+import type { NumberRange } from "src/types"
 import { isUpdateTempCommand } from "src/responses/print/UpdateTempCommand"
 
 export class UpdateTempCommand extends GCodeCommand {
-	public constructor(part: "extruder", temperature: IntRange<0, 301>)
-	public constructor(part: "bed", temperature: IntRange<0, 101>)
+	public constructor(part: "extruder", temperature: NumberRange<0, 300>)
+	public constructor(part: "bed", temperature: NumberRange<0, 100>)
 	public constructor(
 		part: "bed" | "extruder",
-		temperature: IntRange<0, 101> | IntRange<0, 301>
+		temperature: NumberRange<0, 100> | NumberRange<0, 300>
 	) {
 		let GCode = ""
 		switch (part) {

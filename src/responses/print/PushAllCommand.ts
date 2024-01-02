@@ -1,5 +1,5 @@
 import { PrintMessageCommand } from "./PrintMessage"
-import { StringNumber, StringRange, IntRange } from "src/types"
+import { StringNumber, StringNumberRange, NumberRange } from "src/types"
 
 /**
  * Reports all sensors and statuses of the printer.
@@ -23,19 +23,19 @@ export interface PushAllCommand extends PrintMessageCommand {
 	ams_status: number
 	bed_target_temper: number // bed target temperature
 	bed_temper: number // bed temperature
-	big_fan1_speed: StringRange<0, 100> // auxiliary fan
-	big_fan2_speed: StringRange<0, 100> // chamber fan
+	big_fan1_speed: StringNumberRange<0, 100> // auxiliary fan
+	big_fan2_speed: StringNumberRange<0, 100> // chamber fan
 	chamber_temper: number // interior temperature
 	command: "push_status"
-	cooling_fan_speed: StringRange<0, 100> // part Cooling fan
+	cooling_fan_speed: StringNumberRange<0, 100> // part Cooling fan
 	fail_reason: StringNumber
 	fan_gear: number
 	force_upgrade: boolean // something related to the firmware upgrades
 	gcode_file: string // name of the GCODE file that is currently printing, in empty string or {FILENAME}.gcode format
-	gcode_file_prepare_percent: StringRange<0, 100>
+	gcode_file_prepare_percent: StringNumberRange<0, 100>
 	gcode_start_time: StringNumber
 	gcode_state: "FINISH" | "FAILED" | "RUNNING" | "IDLE" | "PAUSE" | "PREPARE"
-	heatbreak_fan_speed: StringRange<0, 100> // smaller fan on the hotend itself
+	heatbreak_fan_speed: StringNumberRange<0, 100> // smaller fan on the hotend itself
 	hms: HMS[]
 	home_flag: number
 	hw_switch_state: number
@@ -50,7 +50,7 @@ export interface PushAllCommand extends PrintMessageCommand {
 	lifecycle: "product" // probably to differentiate between in-house prototypes and production machines
 	lights_report: LightReport[] // internal lights
 	maintain: number
-	mc_percent: IntRange<0, 100> // % of print done
+	mc_percent: NumberRange<0, 100> // % of print done
 	mc_print_line_number: StringNumber // current line number
 	mc_print_error_code: "0" | StringNumber
 	mc_print_stage: "1" | "2" | "3"
@@ -234,7 +234,7 @@ export interface UpgradeState {
 	new_ver_list: string
 	new_version_state: number
 	ota_new_version_number: string
-	progress: StringRange<0, 100>
+	progress: StringNumberRange<0, 100>
 	sequence_id: number
 	status: "IDLE" | string
 }
@@ -252,7 +252,7 @@ export interface Upload {
 	finish_size: number
 	message: string
 	oss_url: string
-	progress: StringRange<0, 100>
+	progress: StringNumberRange<0, 100>
 	sequence_id: StringNumber
 	speed: number
 	status: "idle" | string

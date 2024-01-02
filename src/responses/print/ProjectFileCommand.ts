@@ -1,5 +1,5 @@
 import type { PrintMessageCommand } from "./PrintMessage"
-import type { StringNumber as StringNumber } from "src/types"
+import type { StringNumber } from "src/types"
 
 export interface ProjectFileCommand extends PrintMessageCommand {
 	command: "project_file"

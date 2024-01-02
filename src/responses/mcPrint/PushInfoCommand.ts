@@ -1,5 +1,5 @@
 import type { MCPrintMessageCommand } from "./McPrintMessage"
-import type { StringNumber as StringNumber } from "src/types"
+import type { StringNumber } from "src/types"
 
 export interface PushInfoCommand extends MCPrintMessageCommand {
 	command: "push_info"

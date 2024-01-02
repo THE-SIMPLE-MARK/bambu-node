@@ -1,4 +1,4 @@
-import type { StringNumber as StringNumber } from "src/types"
+import type { StringNumber } from "src/types"
 import type { InfoMessageCommand } from "./InfoMessage"
 
 export interface VersionModule {

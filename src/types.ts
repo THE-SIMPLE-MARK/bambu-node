@@ -1,20 +1,20 @@
 export type StringNumber = `${number}`
 
-export type Enumerate<
-	N extends number,
-	Accumulator extends number[] = [],
-> = Accumulator["length"] extends N
-	? Accumulator[number]
-	: Enumerate<N, [...Accumulator, Accumulator["length"]]>
+export type NumberRange<
+	start extends number,
+	end extends number,
+	arr extends unknown[] = [],
+	acc extends number = never,
+> = arr["length"] extends end
+	? acc | start | end
+	: NumberRange<
+			start,
+			end,
+			[...arr, 1],
+			arr[start] extends undefined ? acc : acc | arr["length"]
+		>
 
-export type IntRange<F extends number, T extends number> = Exclude<
-	Enumerate<T>,
-	Enumerate<F>
->
-
-export type StringRange<F extends number, T extends number> = `${IntRange<F, T>}`
-
-type NonEmptyStr<T extends string = string> = T extends "" ? never : T
+export type StringNumberRange<F extends number, T extends number> = `${NumberRange<F, T>}`
 
 export enum PrinterModel {
 	X1C = "X1C",

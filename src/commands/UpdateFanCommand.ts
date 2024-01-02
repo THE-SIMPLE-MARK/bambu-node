@@ -1,12 +1,12 @@
 import { GCodeCommand } from "./GCodeCommand"
-import type { IntRange } from "src/types"
+import type { NumberRange } from "src/types"
 import { isUpdateFanCommand } from "src/responses/print/UpdateFanCommand"
 
 interface Fans {
-	big_1: IntRange<0, 100>
-	big_2: IntRange<0, 100>
-	cooling: IntRange<0, 100>
-	heatbreak: IntRange<0, 100>
+	big_1: NumberRange<0, 100>
+	big_2: NumberRange<0, 100>
+	cooling: NumberRange<0, 100>
+	heatbreak: NumberRange<0, 100>
 }
 
 export class UpdateFanCommand extends GCodeCommand {
