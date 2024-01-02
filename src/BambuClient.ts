@@ -92,7 +92,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			this.mqttClient.on("disconnect", () => console.log("Disconnected from printer"))
 
 			this.mqttClient.on("message", (topic, message) =>
-				this.emit("globalRawMessage", topic, message)
+				this.emit("rawMessage", topic, message)
 			)
 
 			this.mqttClient.on("error", err => {
