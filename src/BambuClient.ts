@@ -162,18 +162,26 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		// request printer version data
 		await this.executeCommand(new GetVersionCommand())
 
-		// request full printer data
-		await this.executeCommand(new PushAllCommand())
+		// request full printer data on P1 && A1 series printers
+		// because they don't send it each time like the X1 series
+		if (
+			this._printerData.model === PrinterModel.P1P ||
+			this._printerData.model === PrinterModel.P1S ||
+			this._printerData.model === PrinterModel.A1 ||
+			this._printerData.model === PrinterModel.A1M
+		) {
+			// request full printer data
+			await this.executeCommand(new PushAllCommand())
 
-		// request full printer data every 5 minutes
-		// this ensures compatibility with the p1 series' "slow" ESP32 controller
-		// TODO: don't request on the x1 series
-		setInterval(
-			async () => {
-				await this.executeCommand(new PushAllCommand())
-			},
-			5 * 60 * 1000 // 5 minutes
-		)
+			// request full printer data every 5 minutes
+			// this ensures compatibility with the p1 series' "slow" ESP32 controller
+			setInterval(
+				async () => {
+					await this.executeCommand(new PushAllCommand())
+				},
+				5 * 60 * 1000 // 5 minutes
+			)
+		}
 	}
 
 	protected async onMessage(packet: string, topic: string) {
