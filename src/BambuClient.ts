@@ -6,10 +6,10 @@ import { CommandInterface, GetVersionCommand, PushAllCommand } from "src/command
 import {
 	isGetVersionCommand,
 	isInfoMessage,
-	VersionModule,
 	isPrintMessage,
+	isPushAllCommand,
 	isPushStatusCommand,
-	PushStatusCommand,
+	VersionModule,
 } from "src/responses"
 import { PrinterModel } from "src/types"
 
@@ -203,7 +203,13 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				// merge the new data with the old data
 				this._printerData = {
 					...this._printerData,
-					...(data.print as Partial<PushStatusCommand>),
+					...data.print,
+				}
+			} else if (isPushAllCommand(data.print)) {
+				// merge the new data with the old data
+				this._printerData = {
+					...this._printerData,
+					...data.print,
 				}
 			}
 		}
@@ -239,6 +245,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		}
 	}
 
+	/**
+	 * Used by the individual command types to publish messages to the printer.
+	 * @param message
+	 */
 	public publish(message: string | object): Promise<void> {
 		console.log("Publishing to printer", { message })
 
