@@ -2,8 +2,6 @@ import type { CommandInterface } from "./CommandInterface"
 import type { BambuClient } from "src/BambuClient"
 
 export abstract class AbstractCommand implements CommandInterface {
-	public userId: CommandInterface["userId"] = 123_456_789
-
 	public abstract category: CommandInterface["category"]
 
 	public abstract command: CommandInterface["command"]
@@ -19,7 +17,6 @@ export abstract class AbstractCommand implements CommandInterface {
 				command: this.command,
 				...this.extra,
 			},
-			user_id: this.userId,
 		})
 	}
 }

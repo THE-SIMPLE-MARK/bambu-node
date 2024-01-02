@@ -7,6 +7,4 @@ export interface CommandInterface {
 
 	invoke(client: BambuClient): void
 	sequenceId: number
-
-	userId: 123_456_789
 }
