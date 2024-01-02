@@ -2,16 +2,17 @@ import * as mqtt from "mqtt"
 import { MqttClient } from "mqtt"
 import type { BambuClientEvents } from "src/BambuClientEvents"
 import * as events from "eventemitter3"
-import { CommandInterface, GetVersionCommand, PushAllCommand } from "src/commands"
+import { AbstractCommand, GetVersionCommand, PushAllCommand } from "src/commands"
 import {
 	isGetVersionCommand,
 	isInfoMessage,
 	isPrintMessage,
 	isPushAllCommand,
 	isPushStatusCommand,
+	PrintMessageCommand,
 	VersionModule,
 } from "src/responses"
-import { PrinterModel } from "src/types"
+import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
 
 interface ClientOptions {
 	host: string
@@ -26,7 +27,7 @@ interface ClientOptions {
 export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	private mqttClient: mqtt.MqttClient | undefined
 	private config: ClientOptions
-	private _printerData: { modules: VersionModule[]; model: PrinterModel | undefined } = {
+	private _printerData: PrinterData = {
 		modules: [],
 		model: undefined,
 	}
@@ -151,13 +152,33 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 	/**
 	 * Execute a command.
-	 * @param command {CommandInterface} Command to execute.
+	 * @param command {AbstractCommand} Command to execute.
 	 * @returns {Promise<void>}
 	 */
-	public async executeCommand(command: CommandInterface): Promise<void> {
-		return command.invoke(this)
+	public async executeCommand(command: AbstractCommand): Promise<PrintMessageCommand> {
+		return new Promise((resolve, reject) => {
+			// run command
+			command.invoke(this).catch(err => reject(err))
 
-		// TODO: wait for a response before resolving promise
+			// start a timeout which rejects the promise after 5 seconds
+			const timeout = setTimeout(() => {
+				reject(new Error("Command execution timed out after 5 seconds."))
+			}, 5000)
+
+			// wait for a response
+			this.on("message", (topic: string, key: string, data: IncomingMessageData) => {
+				if (!isPrintMessage(data[key])) return
+				const response = data[key] as PrintMessageCommand
+
+				if (!response?.command) return
+
+				if (command.ownsResponse(response)) {
+					// clear the timeout and resolve the promise
+					clearTimeout(timeout)
+					resolve(response)
+				}
+			})
+		})
 	}
 
 	protected async onConnect(packet: mqtt.IConnackPacket) {

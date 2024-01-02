@@ -1,3 +1,5 @@
+import { PushStatusCommand, VersionModule } from "./responses"
+
 export type StringNumber = `${number}`
 
 export type NumberRange<
@@ -24,4 +26,15 @@ export enum PrinterModel {
 	P1S = "P1S",
 	A1 = "A1",
 	A1M = "A1M",
+}
+
+export interface IncomingMessageData {
+	[key: string]: unknown
+}
+
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+
+export interface PrinterData extends Optional<PushStatusCommand, "command"> {
+	modules: VersionModule[]
+	model: PrinterModel | undefined
 }
