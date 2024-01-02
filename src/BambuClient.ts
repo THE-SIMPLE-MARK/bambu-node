@@ -208,7 +208,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 						"OTA module version data not found, unable to determine printer model!"
 					)
 
-				if (otaModule.sn.startsWith("0MM")) this._printerData.model = PrinterModel.X1C
+				if (otaModule.sn.startsWith("00M")) this._printerData.model = PrinterModel.X1C
 				else if (otaModule.sn.startsWith("00W")) this._printerData.model = PrinterModel.X1
 				else if (otaModule.sn.startsWith("03W"))
 					this._printerData.model = PrinterModel.X1E
