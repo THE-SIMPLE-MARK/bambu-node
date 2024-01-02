@@ -74,7 +74,7 @@ export interface PushAllCommand extends PrintMessageCommand {
 	s_obj: unknown[]
 	sdcard: boolean // is SD card inserted
 	sequence_id: StringNumber // related to general MQTT commands, must increment by one each response/request
-	spd_lvl: IntRange<1, 5>
+	spd_lvl: SpeedLevel
 	spd_mag: number
 	stg: PrintStage[] // x (unknown) amount of previous stages
 	stg_cur: PrintStage // current print stage
@@ -154,6 +154,14 @@ enum PrintStage {
 	"CUTTER_ERROR_PAUSE",
 	"FIRST_LAYER_ERROR_PAUSE",
 	"NOZZLE_CLOG_PAUSE",
+}
+
+// extracted from https://github.com/bambulab/BambuStudio/blob/master/src/slic3r/GUI/DeviceManager.hpp#L73-L80
+export enum SpeedLevel {
+	SILENT = "1",
+	NORMAL = "2",
+	SPORT = "3",
+	LUDICROUS = "4",
 }
 
 // AMS instance

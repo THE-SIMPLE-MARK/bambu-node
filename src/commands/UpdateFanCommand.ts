@@ -1,24 +1,33 @@
 import { GCodeCommand } from "./GCodeCommand"
 import type { IntRange } from "src/types"
-
-const fanMap = { cooling: "P1", big_1: "P2", big_2: "P3" }
+import { isUpdateFanCommand } from "src/responses/print/UpdateFanCommand"
 
 interface Fans {
 	big_1: IntRange<0, 100>
 	big_2: IntRange<0, 100>
 	cooling: IntRange<0, 100>
 	heatbreak: IntRange<0, 100>
-	gear: number
 }
 
 export class UpdateFanCommand extends GCodeCommand {
-	public constructor(fan: keyof Fans, percent: IntRange<0, 101>) {
-		console.log(fan, fanMap, fan in fanMap)
-
-		if (!(fan in fanMap)) {
-			throw new Error("Cannot set this fan speed.")
+	public constructor(fan: keyof Fans, percent: Fans[keyof Fans]) {
+		let fanId = ""
+		switch (fan) {
+			case "cooling": // part cooling fan
+				fanId = "P1"
+				break
+			case "big_1": // aux fan
+				fanId = "P2"
+				break
+			case "big_2":
+				fanId = "P3"
+				break
+			default:
+				throw new Error("Unknown fan!")
 		}
 
-		super([`M106 ${fanMap[fan as keyof typeof fanMap]} S${(255 * percent) / 100}`])
+		super([`M106 ${fanId} S${(255 * percent) / 100}`])
 	}
+
+	public static ownsResponse = isUpdateFanCommand
 }
