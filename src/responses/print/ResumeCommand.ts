@@ -1,5 +1,5 @@
 import type { PrintMessageCommand } from "./PrintMessage"
-import type { StringNumber as StringNumber } from "../../../types"
+import type { StringNumber as StringNumber } from "src/types"
 
 export interface ResumeCommand extends PrintMessageCommand {
 	command: "resume"
