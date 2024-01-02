@@ -205,12 +205,16 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 					...this._printerData,
 					...data.print,
 				}
+
+				this.emit("printerDataUpdate", this._printerData)
 			} else if (isPushAllCommand(data.print)) {
 				// merge the new data with the old data
 				this._printerData = {
 					...this._printerData,
 					...data.print,
 				}
+
+				this.emit("printerDataUpdate", this._printerData)
 			}
 		}
 
@@ -220,6 +224,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				this._printerData.modules = [
 					...new Set([...this._printerData.modules, ...data.info.module]),
 				]
+
+				this.emit("printerDataUpdate", this._printerData)
 
 				// figure out the printer version and add it to the printer data
 				// we do this by checking the serial number of OTA module
@@ -241,6 +247,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				else if (otaModule.sn.startsWith("039"))
 					this._printerData.model = PrinterModel.A1M
 				else throw new Error("Printer model not supported!")
+
+				this.emit("printerDataUpdate", this._printerData)
 			}
 		}
 	}
