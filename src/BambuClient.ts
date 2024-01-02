@@ -149,8 +149,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		})
 	}
 
-	public async executeCommand(command: CommandInterface) {
+	/**
+	 * Execute a command.
+	 * @param command {CommandInterface} Command to execute.
+	 * @returns {Promise<void>}
+	 */
+	public async executeCommand(command: CommandInterface): Promise<void> {
 		return command.invoke(this)
+
+		// TODO: wait for a response before resolving promise
 	}
 
 	protected async onConnect(packet: mqtt.IConnackPacket) {
