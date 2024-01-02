@@ -10,6 +10,8 @@ export interface ProjectFileCommand extends PrintMessageCommand {
 	subtask_name: `${number}.3mf`
 }
 
-export function isProjectFileCommand(data: PrintMessageCommand): data is ProjectFileCommand {
+export function isProjectFileCommand(
+	data: PrintMessageCommand
+): data is ProjectFileCommand {
 	return data.command === "project_file"
 }

@@ -161,7 +161,12 @@ export interface AMS {
 	humidity: string
 	id: string
 	temp: string
-	tray: [AMSTray | undefined, AMSTray | undefined, AMSTray | undefined, AMSTray | undefined]
+	tray: [
+		AMSTray | undefined,
+		AMSTray | undefined,
+		AMSTray | undefined,
+		AMSTray | undefined,
+	]
 }
 
 // AMS filament slot instance
@@ -264,6 +269,8 @@ export interface OnlineStatus {
 	version: number
 }
 
-export function isPushStatusCommand(data: PrintMessageCommand): data is PushStatusCommand {
+export function isPushStatusCommand(
+	data: PrintMessageCommand
+): data is PushStatusCommand {
 	return data.command === "push_status"
 }

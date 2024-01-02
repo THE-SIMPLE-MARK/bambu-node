@@ -5,7 +5,10 @@ export type PrintMessageCommands =
 	| "gcode_file"
 	| "project_file"
 
-export type PrintMessageCommand = { command: PrintMessageCommands } & Record<string, unknown>
+export type PrintMessageCommand = { command: PrintMessageCommands } & Record<
+	string,
+	unknown
+>
 
 export interface PrintMessage {
 	print: PrintMessageCommand

@@ -14,7 +14,11 @@ export abstract class AbstractCommand implements CommandInterface {
 
 	public invoke(client: BambuClient): Promise<void> {
 		return client.publish({
-			[this.category]: { sequence_id: "" + this.sequenceId, command: this.command, ...this.extra },
+			[this.category]: {
+				sequence_id: "" + this.sequenceId,
+				command: this.command,
+				...this.extra,
+			},
 			user_id: this.userId,
 		})
 	}

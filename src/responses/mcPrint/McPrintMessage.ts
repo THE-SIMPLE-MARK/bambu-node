@@ -1,6 +1,9 @@
 export type MCPrintMessageCommands = "push_info"
 
-export type MCPrintMessageCommand = { command: MCPrintMessageCommands } & Record<string, unknown>
+export type MCPrintMessageCommand = { command: MCPrintMessageCommands } & Record<
+	string,
+	unknown
+>
 
 export interface MCPrintMessage {
 	print: MCPrintMessageCommand
@@ -8,6 +11,8 @@ export interface MCPrintMessage {
 
 export function isMCPrintMessage(data: any): data is MCPrintMessage {
 	return (
-		!!data?.mc_print && !!data?.mc_print?.command && ["push_info"].includes(data.mc_print.command)
+		!!data?.mc_print &&
+		!!data?.mc_print?.command &&
+		["push_info"].includes(data.mc_print.command)
 	)
 }
