@@ -26,6 +26,7 @@ export interface PushAllCommand extends PrintMessageCommand {
 	big_fan1_speed: StringNumberRange<0, 100> // auxiliary fan
 	big_fan2_speed: StringNumberRange<0, 100> // chamber fan
 	chamber_temper: number // interior temperature
+	frame_temper: number // unknown (possibly unused)
 	command: "push_status"
 	cooling_fan_speed: StringNumberRange<0, 100> // part Cooling fan
 	fail_reason: StringNumber
@@ -47,19 +48,19 @@ export interface PushAllCommand extends PrintMessageCommand {
 		timelapse: "enable" | "disable"
 	}
 	layer_num: number // current layer number while printing
-	lifecycle: "product" // probably to differentiate between in-house prototypes and production machines
+	lifecycle: "product" | "engineer" // probably to differentiate between in-house prototypes and production machines
 	lights_report: LightReport[] // internal lights
 	maintain: number
 	mc_percent: NumberRange<0, 100> // % of print done
 	mc_print_line_number: StringNumber // current line number
 	mc_print_error_code: "0" | StringNumber
-	mc_print_stage: "1" | "2" | "3"
+	mc_print_stage: StringNumberRange<1, 3> // Something to do with signalling if calibration is done according to source code (https://github.com/bambulab/BambuStudio/blob/f96b6cd433cf925e9759260925cd2142abf298ef/src/slic3r/GUI/DeviceManager.cpp#L1331-L1342)
 	mc_print_sub_stage: number
 	mc_remaining_time: number // remaining time from print
 	mess_production_state: "active" | "inactive" // probably to differentiate between in-house prototypes and production machines
-	msg: number
-	nozzle_target_temper: number
-	nozzle_temper: number
+	msg: NumberRange<0, 1> // 0: Full (pushStatus) message 1: Partial "difference" message (only changed properties are sent) WARNING: Unavailable in MQTT interface. You can instead use isPushAllCommand or isPushStatusCommand from /responses or create a new PushAllCommand and PushStatus command from /commands and use their ownsResponse method
+	nozzle_target_temper: number // nozzle target temperature
+	nozzle_temper: number // nozzle temperature
 	online: OnlineStatus
 	print_error: number
 	print_gcode_action: number
@@ -71,11 +72,11 @@ export interface PushAllCommand extends PrintMessageCommand {
 	queue_number: number
 	queue_sts: number
 	queue_total: number
-	s_obj: unknown[]
+	s_obj: unknown[] // skipped objects
 	sdcard: boolean // is SD card inserted
 	sequence_id: StringNumber // related to general MQTT commands, must increment by one each response/request
 	spd_lvl: SpeedLevel
-	spd_mag: number
+	spd_mag: NumberRange<50, 166>
 	stg: PrintStage[] // x (unknown) amount of previous stages
 	stg_cur: PrintStage // current print stage
 	subtask_id: StringNumber // 0 when printing from SD card
@@ -116,7 +117,14 @@ export interface PushAllCommand extends PrintMessageCommand {
 	xcam_status: StringNumber
 }
 
-export type PrinterStatus = "FINISH" | "FAILED" | "RUNNING" | "IDLE" | "PAUSE" | "PREPARE"
+export type PrinterStatus =
+	| "FINISH"
+	| "FAILED"
+	| "RUNNING"
+	| "IDLE"
+	| "PAUSE"
+	| "PREPARE"
+	| "SLICING"
 
 // Extracted from https://github.com/bambulab/BambuStudio/blob/7ce38201c8df33b65691c64a3dcec96986eaf665/src/slic3r/GUI/DeviceManager.cpp#L33-L70
 enum PrintStage {
@@ -238,7 +246,24 @@ export interface UpgradeState {
 	ota_new_version_number: string
 	progress: StringNumberRange<0, 100>
 	sequence_id: number
-	status: "IDLE" | string
+	status: UpgradeStatusProgressState & UpgradeStatusFinishState
+}
+
+// extracted from https://github.com/bambulab/BambuStudio/blob/f96b6cd433cf925e9759260925cd2142abf298ef/src/slic3r/GUI/DeviceManager.cpp#L3481-L3494
+enum UpgradeStatusProgressState {
+	DOWNLOADING = "DOWNLOADING",
+	UPGRADE_REQUEST = "UPGRADE_REQUEST",
+	PRE_FLASH_START = "PRE_FLASH_START",
+	PRE_FLASH_SUCCESS = "PRE_FLASH_SUCCESS",
+}
+
+// extracted from https://github.com/bambulab/BambuStudio/blob/f96b6cd433cf925e9759260925cd2142abf298ef/src/slic3r/GUI/DeviceManager.cpp#L3481-L3494
+enum UpgradeStatusFinishState {
+	UPGRADE_SUCCESS = "UPGRADE_SUCCESS",
+	DOWNLOAD_FAIL = "DOWNLOAD_FAIL",
+	FLASH_FAIL = "FLASH_FAIL",
+	PRE_FLASH_FAIL = "PRE_FLASH_FAIL",
+	UPGRADE_FAIL = "UPGRADE_FAIL",
 }
 
 enum UpgradeDisplayState {
