@@ -9,6 +9,7 @@ import {
 	isPrintMessage,
 	isPushAllCommand,
 	isPushStatusCommand,
+	PrinterStatus,
 	PrintMessageCommand,
 } from "src/responses"
 import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
@@ -68,6 +69,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		modules: [],
 		model: undefined,
 	}
+	private _printerStatus: PrinterStatus = "IDLE"
 
 	public constructor(public readonly clientOptions: ClientOptions) {
 		super()
@@ -229,6 +231,13 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				}
 
 				this.emit("printerDataUpdate", this._printerData)
+
+				if (data.print.gcode_state && data.print.gcode_state !== this._printerStatus) {
+					const currenStatus = this._printerStatus
+					const newStatus = data.print.gcode_state
+
+					this.emit("printerStatusUpdate", currenStatus, newStatus)
+				}
 			}
 		}
 
@@ -296,7 +305,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		})
 	}
 
-	public get printerData() {
+	public get data() {
 		return this._printerData
 	}
 }

@@ -34,7 +34,7 @@ export interface PushAllCommand extends PrintMessageCommand {
 	gcode_file: string // name of the GCODE file that is currently printing, in empty string or {FILENAME}.gcode format
 	gcode_file_prepare_percent: StringNumberRange<0, 100>
 	gcode_start_time: StringNumber
-	gcode_state: "FINISH" | "FAILED" | "RUNNING" | "IDLE" | "PAUSE" | "PREPARE"
+	gcode_state: PrinterStatus
 	heatbreak_fan_speed: StringNumberRange<0, 100> // smaller fan on the hotend itself
 	hms: HMS[]
 	home_flag: number
@@ -115,6 +115,8 @@ export interface PushAllCommand extends PrintMessageCommand {
 	xcam: AIFeatures // AI-related features
 	xcam_status: StringNumber
 }
+
+export type PrinterStatus = "FINISH" | "FAILED" | "RUNNING" | "IDLE" | "PAUSE" | "PREPARE"
 
 // Extracted from https://github.com/bambulab/BambuStudio/blob/7ce38201c8df33b65691c64a3dcec96986eaf665/src/slic3r/GUI/DeviceManager.cpp#L33-L70
 enum PrintStage {
