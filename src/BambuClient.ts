@@ -24,19 +24,6 @@ interface ClientOptions {
  * Manages connectivity and messages from/to the printer.
  */
 export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
-	private mqttClient: mqtt.MqttClient | undefined
-	private config: ClientOptions
-	private _printerData: PrinterData = {
-		modules: [],
-		model: undefined,
-	}
-
-	public constructor(public readonly clientOptions: ClientOptions) {
-		super()
-
-		this.config = clientOptions
-	}
-
 	public override emit<K extends keyof BambuClientEvents>(
 		event: K,
 		...arguments_: BambuClientEvents[K]
@@ -73,6 +60,19 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		super.on(event as keyof BambuClientEvents, listener)
 
 		return this
+	}
+
+	private mqttClient: mqtt.MqttClient | undefined
+	private config: ClientOptions
+	private _printerData: PrinterData = {
+		modules: [],
+		model: undefined,
+	}
+
+	public constructor(public readonly clientOptions: ClientOptions) {
+		super()
+
+		this.config = clientOptions
 	}
 
 	private async connectMQTT() {
