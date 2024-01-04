@@ -32,9 +32,11 @@ export interface IncomingMessageData {
 	[key: string]: unknown
 }
 
-type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 
 export interface PrinterData extends Optional<PushStatusCommand, "command"> {
 	modules: VersionModule[]
 	model: PrinterModel | undefined
 }
+
+export type ValueOf<T> = T extends Record<any, infer V> ? V : never

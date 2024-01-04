@@ -11,8 +11,10 @@ import {
 	isPushStatusCommand,
 	PrinterStatus,
 	PrintMessageCommand,
+	PushAllCommand as PushAllCommandResponse,
 } from "src/responses"
 import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
+import { Job } from "./Job"
 
 interface ClientOptions {
 	host: string
@@ -70,6 +72,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		model: undefined,
 	}
 	private _printerStatus: PrinterStatus = "IDLE"
+
+	public jobHistory: Job[] = []
+	public currentJob: Job | null = null
 
 	public constructor(public readonly clientOptions: ClientOptions) {
 		super()
@@ -213,7 +218,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		}
 	}
 
-	protected async onMessage(packet: string, topic: string) {
+	private async onMessage(packet: string, topic: string) {
 		const data = JSON.parse(packet)
 		const key = Object.keys(data)[0]
 
@@ -232,11 +237,87 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 				this.emit("printer:dataUpdate", this._printerData)
 
+				// update job data
+				if (this.currentJob) this.currentJob.update(data.print)
+
+				// printer status updates and job creation
 				if (data.print.gcode_state && data.print.gcode_state !== this._printerStatus) {
-					const currenStatus = this._printerStatus
+					const oldStatus = this._printerStatus
 					const newStatus = data.print.gcode_state
 
-					this.emit("printer:statusUpdate", currenStatus, newStatus)
+					this.emit("printer:statusUpdate", oldStatus, newStatus)
+
+					// we ignore it because it usually only shows up for a couple of ms and then gets updated to RUNNING
+					if (newStatus === "PREPARE") return
+					// we ignore it because it turns into RUNNING,
+					if (newStatus === "SLICING") return
+
+					if (
+						(oldStatus === "IDLE" ||
+							oldStatus === "FINISH" ||
+							oldStatus === "FAILED" ||
+							oldStatus === "SLICING") &&
+						newStatus === "RUNNING"
+					) {
+						// print start
+
+						// move current job to jobHistory
+						if (this.currentJob !== null) this.jobHistory.push(this.currentJob)
+
+						// create new job and set it as the current job
+						this.currentJob = new Job(
+							data.print as PushAllCommandResponse,
+							this._printerData.model as PrinterModel
+						)
+
+						this.emit("job:start", this.currentJob)
+					} else if (
+						oldStatus === "RUNNING" &&
+						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "IDLE")
+					) {
+						// print finish
+
+						if (newStatus === "FINISH") {
+							// finished with no errors
+
+							if (this.currentJob !== null)
+								this.emit("job:finish:success", this.currentJob)
+						} else if (newStatus === "FAILED") {
+							// finished with errors
+
+							if (this.currentJob !== null)
+								this.emit("job:finish:success", this.currentJob)
+						} else if (newStatus === "IDLE") {
+							// unexpected finish
+
+							if (this.currentJob !== null)
+								this.emit("job:finish:unexpected", this.currentJob)
+						}
+
+						if (this.currentJob !== null) {
+							// move currentJob to jobHistory
+							this.jobHistory.push(this.currentJob)
+
+							this.emit("job:finish", this.currentJob)
+						}
+
+						// empty currentJob
+						this.currentJob = null
+					} else if (oldStatus === "RUNNING" && newStatus === "PAUSE") {
+						// paused
+
+						if (this.currentJob) this.emit("job:pause", this.currentJob)
+					} else if (oldStatus === "PAUSE" && newStatus === "RUNNING") {
+						// unpaused
+
+						if (this.currentJob) this.emit("job:unpause", this.currentJob)
+					} else if (oldStatus !== newStatus) {
+						// does not match but not "caught" before
+						throw new Error("Edge case detected while updating printer status!")
+					}
+
+					// set old status as the new status
+					this._printerStatus = data.print.gcode_state
 				}
 			}
 		}
@@ -305,7 +386,11 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		})
 	}
 
-	public get data() {
+	public get data(): PrinterData {
 		return this._printerData
+	}
+
+	public get status(): PrinterStatus {
+		return this._printerStatus
 	}
 }

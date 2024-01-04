@@ -547,7 +547,7 @@ export type PrinterStatus =
  *
  * Extracted from https://github.com/bambulab/BambuStudio/blob/master/src/slic3r/GUI/DeviceManager.cpp#L33-L70
  */
-enum PrintStage {
+export enum PrintStage {
 	"PRINTING",
 	"BED_LEVELING",
 	"HEATBED_PREHEATING",
@@ -756,7 +756,7 @@ export interface ExternalTray extends AMSTray {
 /**
  * Status of the AMS' RFID reader.
  */
-enum AmsRFIDStatus {
+export enum AmsRFIDStatus {
 	IDLE = 0,
 	READING = 1,
 	GCODE_TRANS = 2,
@@ -791,7 +791,7 @@ export interface LightReport {
  *
  * Extracted from https://github.com/bambulab/BambuStudio/blob/master/src/slic3r/GUI/DeviceManager.cpp#L3481-L3494
  */
-enum UpgradeStatusProgressState {
+export enum UpgradeStatusProgressState {
 	DOWNLOADING = "DOWNLOADING",
 	UPGRADE_REQUEST = "UPGRADE_REQUEST",
 	PRE_FLASH_START = "PRE_FLASH_START",
@@ -803,7 +803,7 @@ enum UpgradeStatusProgressState {
  *
  * Extracted from https://github.com/bambulab/BambuStudio/blob/master/src/slic3r/GUI/DeviceManager.cpp#L3481-L3494
  */
-enum UpgradeStatusFinishState {
+export enum UpgradeStatusFinishState {
 	UPGRADE_SUCCESS = "UPGRADE_SUCCESS",
 	DOWNLOAD_FAIL = "DOWNLOAD_FAIL",
 	FLASH_FAIL = "FLASH_FAIL",
@@ -814,7 +814,7 @@ enum UpgradeStatusFinishState {
 /**
  * Error codes thrown by the upgrade.
  */
-enum UpgradeErrorCode {
+export enum UpgradeErrorCode {
 	UpgradeNoError = 0,
 	UpgradeDownloadFailed = 1,
 	UpgradeVerifyFailed = 2,
@@ -825,7 +825,7 @@ enum UpgradeErrorCode {
 /**
  * The possible states the printer's screen will display.
  */
-enum UpgradeDisplayState {
+export enum UpgradeDisplayState {
 	UNAVAILABLE = 0,
 	IDLE = 1,
 	UPGRADING = 2,
