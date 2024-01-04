@@ -1,4 +1,4 @@
-import { PrinterData, PrinterModel, ValueOf } from "./types"
+import { PrinterModel } from "./types"
 import { HMS, PrinterStatus, PrintStage, PushAllCommand } from "./responses"
 import { createId } from "@paralleldrive/cuid2"
 
