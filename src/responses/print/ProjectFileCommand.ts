@@ -3,6 +3,9 @@ import type { StringNumber } from "src/types"
 
 export interface ProjectFileCommand extends PrintMessageCommand {
 	command: "project_file"
+	/**
+	 * The location of the project file.
+	 */
 	param: `Metadata/${string}.gcode`
 	reason: "SUCCESS" | "FAILURE" | string
 	result: "SUCCESS" | "FAILURE" | string

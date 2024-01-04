@@ -2,9 +2,21 @@ import type { StringNumber } from "src/types"
 import type { InfoMessageCommand } from "./InfoMessage"
 
 export interface VersionModule {
-	hw_ver: string
+	/**
+	 * The module's name.
+	 */
 	name: string
+	/**
+	 * The module's hardware version.
+	 */
+	hw_ver: string
+	/**
+	 * The module's serial number.
+	 */
 	sn: string
+	/**
+	 * The module's software version.
+	 */
 	sw_ver: string
 }
 

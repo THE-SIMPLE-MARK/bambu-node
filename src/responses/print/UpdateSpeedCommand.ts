@@ -6,7 +6,7 @@ import { SpeedLevel } from "./PushAllCommand"
 export interface UpdateSpeedCommand extends PushStatusCommand {
 	param: string
 	spd_lvl: SpeedLevel
-	spd_mag: NumberRange<50, 201>
+	spd_mag: NumberRange<50, 166>
 	reason: "SUCCESS" | "FAILURE" | string
 	result: "SUCCESS" | "FAILURE" | string
 	sequence_id: StringNumber
