@@ -3,11 +3,12 @@
 	"version": "1.0.0",
 	"description": "A node.js library for connecting to and receiving data from Bambu Lab printers through their MQTT servers.",
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"files": [
 		"dist"
 	],
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/THE-SIMPLE-MARK/bambu-node.git"
@@ -24,22 +25,16 @@
 		"client"
 	],
 	"scripts": {
-		"dev": "concurrently \"npm run watch-compile\" \"npm run watch-dev\"",
-		"watch-compile": "swc src -w --out-dir dist",
-		"watch-dev": "nodemon --watch \"dist/**/*\" -e js ./dist/server.js",
-		"build": "swc src --out-dir dist",
+		"dev": "tsup --watch",
+		"build": "tsup",
 		"format": "prettier --write ."
 	},
 	"author": "SIMPLE MARK",
 	"license": "MIT",
 	"devDependencies": {
-		"@swc/cli": "^0.1.63",
-		"@swc/core": "^1.3.102",
 		"@types/node": "^20.10.6",
-		"chokidar": "^3.5.3",
-		"concurrently": "^8.2.2",
-		"nodemon": "^3.0.2",
 		"prettier": "^3.1.1",
+		"tsup": "^8.0.1",
 		"typescript": "^5.3.3"
 	},
 	"dependencies": {
