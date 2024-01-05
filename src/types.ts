@@ -5,16 +5,6 @@ import {
 	PushStatusResponse,
 	VersionModule,
 } from "./responses"
-import {
-	GCodeCommand,
-	GetVersionCommand,
-	PushAllCommand,
-	UpdateFanCommand,
-	UpdateLightCommand,
-	UpdateSpeedCommand,
-	UpdateStateCommand,
-	UpdateTempCommand,
-} from "./commands"
 
 export type StringNumber = `${number}`
 
