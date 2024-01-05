@@ -10,7 +10,7 @@ export type PrintMessageCommands =
 export type PrintMessageCommand = {
 	command: PrintMessageCommands
 	param?: string
-} & Record<string, unknown>
+}
 
 export interface PrintMessage {
 	print: PrintMessageCommand

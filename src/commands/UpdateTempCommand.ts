@@ -24,5 +24,5 @@ export class UpdateTempCommand extends GCodeCommand {
 		super([`${GCode} S${temperature}`])
 	}
 
-	public static ownsResponse = isUpdateTempCommand
+	ownsResponse = isUpdateTempCommand
 }

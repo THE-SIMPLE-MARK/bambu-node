@@ -1,4 +1,20 @@
-import { PushStatusResponse, VersionModule } from "./responses"
+import {
+	InfoMessageCommand,
+	MCPrintMessageCommand,
+	PrintMessageCommand,
+	PushStatusResponse,
+	VersionModule,
+} from "./responses"
+import {
+	GCodeCommand,
+	GetVersionCommand,
+	PushAllCommand,
+	UpdateFanCommand,
+	UpdateLightCommand,
+	UpdateSpeedCommand,
+	UpdateStateCommand,
+	UpdateTempCommand,
+} from "./commands"
 
 export type StringNumber = `${number}`
 
@@ -40,3 +56,8 @@ export interface PrinterData extends Optional<PushStatusResponse, "command"> {
 }
 
 export type ValueOf<T> = T extends Record<any, infer V> ? V : never
+
+export type CommandResponse =
+	| InfoMessageCommand
+	| MCPrintMessageCommand
+	| PrintMessageCommand

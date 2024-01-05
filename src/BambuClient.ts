@@ -6,14 +6,19 @@ import { AbstractCommand, GetVersionCommand, PushAllCommand } from "src/commands
 import {
 	isGetVersionCommand,
 	isInfoMessage,
+	isMCPrintMessage,
 	isPrintMessage,
 	isPushAllCommand,
 	isPushStatusCommand,
 	PrinterStatus,
-	PrintMessageCommand,
 	PushAllResponse as PushAllCommandResponse,
 } from "src/responses"
-import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
+import {
+	CommandResponse,
+	IncomingMessageData,
+	PrinterData,
+	PrinterModel,
+} from "src/types"
 import { Job } from "./Job"
 
 interface ClientOptions {
@@ -159,9 +164,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	/**
 	 * Execute a command.
 	 * @param command {AbstractCommand} Command to execute.
-	 * @returns {Promise<void>}
+	 * @returns {Promise<CommandResponse>}
 	 */
-	public async executeCommand(command: AbstractCommand): Promise<PrintMessageCommand> {
+	public async executeCommand(command: AbstractCommand): Promise<CommandResponse> {
 		return new Promise((resolve, reject) => {
 			// run command
 			command.invoke(this).catch(err => reject(err))
@@ -173,8 +178,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 			// wait for a response
 			this.on("message", (topic: string, key: string, data: IncomingMessageData) => {
-				if (!isPrintMessage(data[key])) return
-				const response = data[key] as PrintMessageCommand
+				if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data)))
+					return console.log("Unknown command")
+
+				const response = data[key] as CommandResponse
 
 				if (!response?.command) return
 
@@ -380,7 +387,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 					return reject(`Error publishing to topic '${topic}': ${error.message}`)
 				}
 
-				console.log("Published to printer", { message })
 				resolve()
 			})
 		})

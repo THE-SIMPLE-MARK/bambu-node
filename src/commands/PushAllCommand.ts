@@ -7,5 +7,5 @@ export class PushAllCommand extends AbstractCommand {
 	public command: CommandInterface["command"] = "pushall"
 	public sequenceId: CommandInterface["sequenceId"] = 1
 
-	public static ownsCommand = isPushAllCommand
+	ownsResponse = isPushAllCommand
 }

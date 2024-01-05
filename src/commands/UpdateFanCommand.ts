@@ -29,5 +29,5 @@ export class UpdateFanCommand extends GCodeCommand {
 		super([`M106 ${fanId} S${(255 * percent) / 100}`])
 	}
 
-	public static ownsResponse = isUpdateFanCommand
+	ownsResponse = isUpdateFanCommand
 }

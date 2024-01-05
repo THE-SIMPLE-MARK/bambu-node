@@ -1,6 +1,6 @@
 import type { CommandInterface } from "./CommandInterface"
 import type { BambuClient } from "src/BambuClient"
-import { PrintMessageCommand } from "../responses"
+import { CommandResponse } from "../types"
 
 export abstract class AbstractCommand implements CommandInterface {
 	public abstract category: CommandInterface["category"]
@@ -21,7 +21,5 @@ export abstract class AbstractCommand implements CommandInterface {
 		})
 	}
 
-	ownsResponse(command: PrintMessageCommand) {
-		return false
-	}
+	public abstract ownsResponse(command: CommandResponse): boolean
 }

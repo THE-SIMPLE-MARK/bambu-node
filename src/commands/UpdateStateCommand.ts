@@ -16,5 +16,5 @@ export class UpdateStateCommand extends AbstractCommand {
 		this.sequenceId = sequenceMap[state]
 	}
 
-	public static ownsResponse = isUpdateStateCommand
+	ownsResponse = isUpdateStateCommand
 }

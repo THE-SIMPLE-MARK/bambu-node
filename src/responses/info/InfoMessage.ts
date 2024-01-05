@@ -1,9 +1,6 @@
 export type InfoMessageCommands = "get_version"
 
-export type InfoMessageCommand = { command: InfoMessageCommands } & Record<
-	string,
-	unknown
->
+export type InfoMessageCommand = { command: InfoMessageCommands }
 
 export interface InfoMessage {
 	info: InfoMessageCommand

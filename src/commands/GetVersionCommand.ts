@@ -7,5 +7,5 @@ export class GetVersionCommand extends AbstractCommand {
 	public command: CommandInterface["command"] = "get_version"
 	public sequenceId: CommandInterface["sequenceId"] = 20_004
 
-	public static ownsCommand = isGetVersionCommand
+	ownsResponse = isGetVersionCommand
 }

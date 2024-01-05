@@ -20,5 +20,5 @@ export class UpdateLightCommand extends AbstractCommand {
 		})
 	}
 
-	public static ownsResponse = isUpdateLightCommand
+	ownsResponse = isUpdateLightCommand
 }

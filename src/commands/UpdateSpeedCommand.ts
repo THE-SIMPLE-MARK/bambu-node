@@ -12,5 +12,5 @@ export class UpdateSpeedCommand extends AbstractCommand {
 		super({ param: speed.toString() })
 	}
 
-	public static ownsResponse = isUpdateSpeedCommand
+	ownsResponse = isUpdateSpeedCommand
 }

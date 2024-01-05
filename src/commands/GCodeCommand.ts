@@ -1,8 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand"
 import type { CommandInterface } from "./CommandInterface"
-import { isGCodeLineCommand } from "src/responses"
 
-export class GCodeCommand extends AbstractCommand {
+export abstract class GCodeCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"
 	public command: CommandInterface["command"] = "gcode_line"
 	public sequenceId: CommandInterface["sequenceId"] = 2006
@@ -11,5 +10,5 @@ export class GCodeCommand extends AbstractCommand {
 		super({ param: gcode.join("\n") + "\n" })
 	}
 
-	public static ownsCommand = isGCodeLineCommand
+	// TODO: implement GCodeLineCommand which extends this
 }

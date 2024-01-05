@@ -1,9 +1,6 @@
 export type MCPrintMessageCommands = "push_info"
 
-export type MCPrintMessageCommand = { command: MCPrintMessageCommands } & Record<
-	string,
-	unknown
->
+export type MCPrintMessageCommand = { command: MCPrintMessageCommands }
 
 export interface MCPrintMessage {
 	print: MCPrintMessageCommand
