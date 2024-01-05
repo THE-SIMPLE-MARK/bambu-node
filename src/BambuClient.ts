@@ -249,21 +249,17 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 				// printer status updates and job creation
 				if (data.print.gcode_state && data.print.gcode_state !== this._printerStatus) {
-					const oldStatus = this._printerStatus
-					const newStatus = data.print.gcode_state
+					let oldStatus = this._printerStatus
+					let newStatus = data.print.gcode_state
 
 					this.emit("printer:statusUpdate", oldStatus, newStatus)
 
-					// we ignore it because it usually only shows up for a couple of ms and then gets updated to RUNNING
-					if (newStatus === "PREPARE") return
-					// we ignore it because it turns into RUNNING,
-					if (newStatus === "SLICING") return
+					// we treat PREPARE and SLICING as an alias of idle because they're of no use
+					if (newStatus === "PREPARE" || newStatus === "SLICING") newStatus = "IDLE"
+					if (oldStatus === "PREPARE" || oldStatus === "SLICING") newStatus = "RUNNING"
 
 					if (
-						(oldStatus === "IDLE" ||
-							oldStatus === "FINISH" ||
-							oldStatus === "FAILED" ||
-							oldStatus === "SLICING") &&
+						(oldStatus === "IDLE" || oldStatus === "FINISH" || oldStatus === "FAILED") &&
 						newStatus === "RUNNING"
 					) {
 						// print start
@@ -318,6 +314,12 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 						// unpaused
 
 						if (this.currentJob) this.emit("job:unpause", this.currentJob)
+					} else if (
+						oldStatus === "IDLE" &&
+						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "PAUSE")
+					) {
+						// this usually only happens when the client connects / when we connect into a paused job
+						// all of which we ignore
 					} else if (oldStatus !== newStatus) {
 						// does not match but not "caught" before
 						throw new Error("Edge case detected while updating printer status!")
