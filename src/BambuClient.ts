@@ -11,7 +11,7 @@ import {
 	isPushStatusCommand,
 	PrinterStatus,
 	PrintMessageCommand,
-	PushAllCommand as PushAllCommandResponse,
+	PushAllResponse as PushAllCommandResponse,
 } from "src/responses"
 import { IncomingMessageData, PrinterData, PrinterModel } from "src/types"
 import { Job } from "./Job"

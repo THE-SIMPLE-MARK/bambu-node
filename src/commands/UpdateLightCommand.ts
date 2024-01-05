@@ -1,7 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand"
 import type { CommandInterface } from "./CommandInterface"
 import { LightReport } from "src/responses"
-import { isUpdateLightCommand } from "src/responses/print/UpdateLightCommand"
+import { isUpdateLightCommand } from "src/responses/print/UpdateLightResponse"
 
 export class UpdateLightCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "system"

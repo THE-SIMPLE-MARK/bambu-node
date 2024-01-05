@@ -1,4 +1,4 @@
-import { PushStatusCommand, VersionModule } from "./responses"
+import { PushStatusResponse, VersionModule } from "./responses"
 
 export type StringNumber = `${number}`
 
@@ -34,7 +34,7 @@ export interface IncomingMessageData {
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 
-export interface PrinterData extends Optional<PushStatusCommand, "command"> {
+export interface PrinterData extends Optional<PushStatusResponse, "command"> {
 	modules: VersionModule[]
 	model: PrinterModel | undefined
 }

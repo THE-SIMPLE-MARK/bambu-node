@@ -1,7 +1,7 @@
 import type { PrintMessageCommand } from "./PrintMessage"
 import type { StringNumber } from "src/types"
 
-export interface UpdateTempCommand extends PrintMessageCommand {
+export interface UpdateTempResponse extends PrintMessageCommand {
 	command: "gcode_line"
 	param: string
 	reason: "SUCCESS" | "FAILURE" | string
@@ -11,7 +11,7 @@ export interface UpdateTempCommand extends PrintMessageCommand {
 
 export function isUpdateTempCommand(
 	data: PrintMessageCommand
-): data is UpdateTempCommand {
+): data is UpdateTempResponse {
 	return (
 		data.command === "gcode_line" &&
 		Boolean(data?.param?.startsWith("M104") || data?.param?.startsWith("M140"))

@@ -1,7 +1,7 @@
 import { AbstractCommand } from "./AbstractCommand"
 import type { CommandInterface } from "./CommandInterface"
 import { SpeedLevel } from "src/responses"
-import { isUpdateSpeedCommand } from "src/responses/print/UpdateSpeedCommand"
+import { isUpdateSpeedCommand } from "src/responses/print/UpdateSpeedResponse"
 
 export class UpdateSpeedCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"

@@ -1,2 +1,2 @@
 export * from "./McPrintMessage"
-export * from "./PushInfoCommand"
+export * from "./PushInfoResponse"

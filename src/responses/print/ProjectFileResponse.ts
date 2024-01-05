@@ -1,7 +1,7 @@
 import type { PrintMessageCommand } from "./PrintMessage"
 import type { StringNumber } from "src/types"
 
-export interface ProjectFileCommand extends PrintMessageCommand {
+export interface ProjectFileResponse extends PrintMessageCommand {
 	command: "project_file"
 	/**
 	 * The location of the project file.
@@ -15,6 +15,6 @@ export interface ProjectFileCommand extends PrintMessageCommand {
 
 export function isProjectFileCommand(
 	data: PrintMessageCommand
-): data is ProjectFileCommand {
+): data is ProjectFileResponse {
 	return data.command === "project_file"
 }

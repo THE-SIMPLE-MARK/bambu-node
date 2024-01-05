@@ -1,7 +1,7 @@
 import type { PrintMessageCommand } from "./PrintMessage"
 import { StringNumber } from "src/types"
 
-export interface GCodeLineCommand extends PrintMessageCommand {
+export interface GCodeLineResponse extends PrintMessageCommand {
 	command: "gcode_line"
 	reason: "SUCCESS" | "FAILURE" | string
 	result: "SUCCESS" | "FAILURE" | string
@@ -9,6 +9,6 @@ export interface GCodeLineCommand extends PrintMessageCommand {
 	sequence_id: StringNumber
 }
 
-export function isGCodeLineCommand(data: PrintMessageCommand): data is GCodeLineCommand {
+export function isGCodeLineCommand(data: PrintMessageCommand): data is GCodeLineResponse {
 	return data.command === "gcode_line"
 }

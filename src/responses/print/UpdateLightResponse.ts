@@ -1,9 +1,9 @@
 import type { PrintMessageCommand } from "./PrintMessage"
 import type { StringNumber } from "src/types"
-import { PushStatusCommand } from "./PushStatusCommand"
-import { LightReport } from "./PushAllCommand"
+import { PushStatusResponse } from "./PushStatusResponse"
+import { LightReport } from "./PushAllResponse"
 
-export interface UpdateLightCommand extends PushStatusCommand {
+export interface UpdateLightResponse extends PushStatusResponse {
 	param: string
 	lights_report: LightReport[]
 	reason: "SUCCESS" | "FAILURE" | string
@@ -13,6 +13,6 @@ export interface UpdateLightCommand extends PushStatusCommand {
 
 export function isUpdateLightCommand(
 	data: PrintMessageCommand
-): data is UpdateLightCommand {
+): data is UpdateLightResponse {
 	return data.command === "push_status" && data.hasOwnProperty("lights_report")
 }

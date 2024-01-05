@@ -20,12 +20,14 @@ export interface VersionModule {
 	sw_ver: string
 }
 
-export interface GetVersionCommand extends InfoMessageCommand {
+export interface GetVersionResponse extends InfoMessageCommand {
 	command: "get_version"
 	module: VersionModule[]
 	sequence_id: StringNumber
 }
 
-export function isGetVersionCommand(data: InfoMessageCommand): data is GetVersionCommand {
+export function isGetVersionCommand(
+	data: InfoMessageCommand
+): data is GetVersionResponse {
 	return data.command === "get_version"
 }

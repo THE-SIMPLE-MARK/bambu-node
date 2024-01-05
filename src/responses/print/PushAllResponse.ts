@@ -4,7 +4,7 @@ import { StringNumber, StringNumberRange, NumberRange } from "src/types"
 /**
  * Reports all sensors and statuses of the printer.
  */
-export interface PushAllCommand extends PrintMessageCommand {
+export interface PushAllResponse extends PrintMessageCommand {
 	/**
 	 * Status of all connected AMSes.
 	 */
@@ -832,6 +832,6 @@ export enum UpgradeDisplayState {
 	UPGRADE_FINISHED = 3,
 }
 
-export function isPushAllCommand(data: PrintMessageCommand): data is PushAllCommand {
+export function isPushAllCommand(data: PrintMessageCommand): data is PushAllResponse {
 	return data.command === "push_status" && Object.keys(data).length >= 40
 }

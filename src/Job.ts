@@ -1,5 +1,5 @@
 import { PrinterModel } from "./types"
-import { HMS, PrinterStatus, PrintStage, PushAllCommand } from "./responses"
+import { HMS, PrinterStatus, PrintStage, PushAllResponse } from "./responses"
 import { createId } from "@paralleldrive/cuid2"
 
 const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
@@ -11,7 +11,7 @@ const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
 export class Job {
 	private _jobData: JobData | undefined
 
-	public constructor(data: PushAllCommand, printerModel: PrinterModel) {
+	public constructor(data: PushAllResponse, printerModel: PrinterModel) {
 		const currentDate = new Date()
 
 		this._jobData = {
@@ -60,7 +60,7 @@ export class Job {
 	/**
 	 * Updates the job with new (up-to-date) data.
 	 */
-	public update(data: Partial<PushAllCommand>) {
+	public update(data: Partial<PushAllResponse>) {
 		if (!this._jobData) return
 
 		const existingData = this._jobData
@@ -155,46 +155,46 @@ interface JobData {
 	 * The `subtask_name` property.
 	 * @see PushAllCommand["subtask_name"]
 	 */
-	fileName: PushAllCommand["subtask_name"]
+	fileName: PushAllResponse["subtask_name"]
 	/**
 	 * The name of the GCode which gets executed.
 	 * @see PushAllCommand["gcode_file"]
 	 */
-	gcodeName: PushAllCommand["gcode_file"]
+	gcodeName: PushAllResponse["gcode_file"]
 	/**
 	 * The origin of the job.
 	 * @see PushAllCommand["print_type"]
 	 */
-	jobOrigin: PushAllCommand["print_type"]
+	jobOrigin: PushAllResponse["print_type"]
 	/**
 	 * The total layer number of the job.
 	 */
-	totalLayerNumber: PushAllCommand["total_layer_num"]
+	totalLayerNumber: PushAllResponse["total_layer_num"]
 	/**
 	 * The total print time the Job takes to print in minutes.
 	 */
-	totalPrintTime: PushAllCommand["mc_remaining_time"]
+	totalPrintTime: PushAllResponse["mc_remaining_time"]
 	/**
 	 * The status of the job (printer).
 	 */
-	status: PushAllCommand["gcode_state"]
+	status: PushAllResponse["gcode_state"]
 	/**
 	 * The % of the print done from the job.
 	 */
-	percentDone: PushAllCommand["mc_percent"]
+	percentDone: PushAllResponse["mc_percent"]
 	/**
 	 * The current layer number.
 	 */
-	layerNumber: PushAllCommand["layer_num"]
+	layerNumber: PushAllResponse["layer_num"]
 	/**
 	 * The remaining time until the job finishes in minutes.
 	 */
-	remainingTime: PushAllCommand["mc_remaining_time"]
+	remainingTime: PushAllResponse["mc_remaining_time"]
 	/**
 	 * Objects that have been skipped by the printer while printing.
 	 * @see PushStatusCommand["s_obj"]
 	 */
-	skippedObjects: PushAllCommand["s_obj"]
+	skippedObjects: PushAllResponse["s_obj"]
 	/**
 	 * Stores the status changes throughout the job.
 	 */
@@ -229,8 +229,8 @@ interface StatusChangeItem {
  * A manual speed level change instance.
  */
 interface SpeedLevelHistoryItem {
-	speedLevel: PushAllCommand["spd_lvl"]
-	speedMagnitude: PushAllCommand["spd_mag"]
+	speedLevel: PushAllResponse["spd_lvl"]
+	speedMagnitude: PushAllResponse["spd_mag"]
 	changedAt: Date
 }
 

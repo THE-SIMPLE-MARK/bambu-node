@@ -1,6 +1,6 @@
 import { GCodeCommand } from "./GCodeCommand"
 import type { NumberRange } from "src/types"
-import { isUpdateFanCommand } from "src/responses/print/UpdateFanCommand"
+import { isUpdateFanCommand } from "src/responses/print/UpdateFanResponse"
 
 interface Fans {
 	big_1: NumberRange<0, 100>

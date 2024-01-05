@@ -1,6 +1,6 @@
 import { GCodeCommand } from "./GCodeCommand"
 import type { NumberRange } from "src/types"
-import { isUpdateTempCommand } from "src/responses/print/UpdateTempCommand"
+import { isUpdateTempCommand } from "src/responses/print/UpdateTempResponse"
 
 export class UpdateTempCommand extends GCodeCommand {
 	public constructor(part: "extruder", temperature: NumberRange<0, 300>)
