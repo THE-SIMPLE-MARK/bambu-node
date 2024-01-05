@@ -9,6 +9,6 @@ export default defineConfig(opts => ({
 	},
 	format: "esm",
 	target: "es2020",
-	minify: true,
+	minify: !opts.watch,
 	outDir: "dist",
 }))
