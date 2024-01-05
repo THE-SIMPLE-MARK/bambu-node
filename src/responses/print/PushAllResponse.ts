@@ -9,7 +9,7 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 * Status of all connected AMSes.
 	 */
 	ams: {
-		ams: [AMS] | [AMS, AMS] | [AMS, AMS, AMS] | [AMS, AMS, AMS, AMS]
+		ams: [] | [AMS] | [AMS, AMS] | [AMS, AMS, AMS] | [AMS, AMS, AMS, AMS]
 		/**
 		 * Unknown.
 		 *
@@ -102,9 +102,18 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 */
 	chamber_temper: number
 	/**
-	 * Unknown. Bambu Studio checks for it but doesn't actually use it.
+	 * The interior chamber's target temperature.
 	 *
-	 * Could possibly be related to the temperature regulation feature of the X1E.
+	 * Exists on the X1 series but only used on the X1E.
+	 */
+	ctt: number
+	/**
+	 * `chamber_temper` doesn't make sense on P1 series (due to it not being enclosed
+	 * by default) hence the `frame_temper` property.
+	 *
+	 * Even though `chamber_temper` exists, there is no physical sensor for it, but it is still included for some reason.
+	 *
+	 * The value of `chamber_temper` on the P1 series is a placeholder.
 	 */
 	frame_temper: number
 	/**
@@ -132,7 +141,10 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 */
 	force_upgrade: boolean
 	/**
-	 * Name of the GCode file that is currently printing as an empty string or in {FILENAME}.gcode format.
+	 * Name of the GCode file that is currently printing.
+	 *
+	 * In most cases it's in the format "/plate_#.gcode", unless printing a
+	 * gcode file directly (bbl.gcode, or calibration gcodes) instead of a 3mf.
 	 */
 	gcode_file: string
 	/**
@@ -181,6 +193,15 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 */
 	ipcam: {
 		/**
+		 * The IP and path to the LAN liveview, otherwise disabled.
+		 * @version X1 series exclusive
+		 */
+		liveview: string | "disable"
+		/**
+		 * Unknown. Bambu Studio doesn't even check for it.
+		 */
+		tukt_server: string
+		/**
 		 * 0: Doesn't have camera
 		 * 1: Has camera
 		 */
@@ -195,8 +216,10 @@ export interface PushAllResponse extends PrintMessageCommand {
 		mode_bits: 3
 		/**
 		 * The camera's resolution
+		 *
+		 * The value is known to be very weird on the A1 series.
 		 */
-		resolution: "720p" | "1080p"
+		resolution: "720p" | "1080p" | string
 		/**
 		 * Whether creating a timelapse while printing is enabled.
 		 */
@@ -254,8 +277,9 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 * - 0: Full (pushAll) message
 	 * - 1: Partial (pushStatus) "difference" message (only changed properties are sent)
 	 *
-	 * @deprecated Unavailable on the X1 series.
-	 *  You can instead use isPushAllCommand or isPushStatusCommand from /responses or create a new PushAllCommand and PushStatus command from /commands and use their ownsResponse method.
+	 * @deprecated Unavailable on the X1 series in LAN mode.
+	 *
+	 *  You can instead use isPushAllCommand or isPushStatusCommand from /responses or create a new PushAllCommand and PushStatus command from /commands and use their ownsResponse method for consistency.
 	 */
 	msg: NumberRange<0, 1>
 	/**
@@ -359,7 +383,7 @@ export interface PushAllResponse extends PrintMessageCommand {
 	 */
 	subtask_id: StringNumber
 	/**
-	 * TODO
+	 * The name of the calibration gcode (without file extension), or the project file name (.3mf - with file extension)
 	 */
 	subtask_name: string
 	/**
@@ -648,7 +672,11 @@ export interface AMSTray {
 	 */
 	nozzle_temp_min: StringNumber
 	/**
-	 * Use is unknown.
+	 * The amount filament remaining in %, if enabled and an official Bambu filament is loaded.
+	 *
+	 * With non-official Bambu filament:
+	 * - 0: Tracking is disabled.
+	 * - -1: Tracking is enabled.
 	 */
 	remain: number
 	/**
