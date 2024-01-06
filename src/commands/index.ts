@@ -1,5 +1,5 @@
 export * from "./AbstractCommand"
-export type * from "./CommandInterface"
+export * from "./GCodeCommand"
 export * from "./GCodeFileCommand"
 export * from "./GCodeLineCommand"
 export * from "./GetVersionCommand"

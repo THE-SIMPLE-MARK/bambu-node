@@ -1,11 +1,10 @@
 import { AbstractCommand } from "./AbstractCommand"
 import type { CommandInterface } from "./CommandInterface"
-import { isGcodeFileCommand, isPushAllCommand } from "src/responses"
+import { isGcodeFileCommand } from "src/responses"
 
 export class GCodeFileCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"
 	public command: CommandInterface["command"] = "gcode_file"
-	public sequenceId: CommandInterface["sequenceId"] = 1
 
 	/**
 	 * Constructs a new GCode file command.

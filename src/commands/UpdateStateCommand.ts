@@ -8,7 +8,6 @@ export type State = "pause" | "resume" | "stop"
 export class UpdateStateCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"
 	public command: CommandInterface["command"]
-	public sequenceId: CommandInterface["sequenceId"]
 
 	public constructor(state: State) {
 		super()

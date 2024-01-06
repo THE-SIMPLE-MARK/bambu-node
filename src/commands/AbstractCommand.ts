@@ -1,11 +1,12 @@
 import type { CommandInterface } from "./CommandInterface"
 import type { BambuClient } from "src/BambuClient"
 import { CommandResponse } from "../types"
+import { getSequenceId } from "../utils/sequenceIdManager"
 
 export abstract class AbstractCommand implements CommandInterface {
 	public abstract category: CommandInterface["category"]
 	public abstract command: CommandInterface["command"]
-	public abstract sequenceId: CommandInterface["sequenceId"]
+	public sequenceId = getSequenceId()
 
 	public constructor(public extra: CommandInterface["extra"] = {}) {}
 

@@ -1,7 +1,9 @@
-import { GCodeCommand } from "./GCodeCommand"
-import { isGCodeLineCommand } from "../responses"
+import { GCodeCommand, GCodeCommandParam } from "./GCodeCommand"
+import { isGCodeLineCommand } from "src/responses"
 
 export class GCodeLineCommand extends GCodeCommand {
+	public command: GCodeCommandParam = "gcode_line"
+
 	/**
 	 * Creates a raw GCode line command.
 	 * @param gcodes The array of GCode commands to execute.

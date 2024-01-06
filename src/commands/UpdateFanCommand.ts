@@ -1,6 +1,6 @@
-import { GCodeCommand } from "./GCodeCommand"
+import { GCodeCommand, GCodeCommandParam } from "./GCodeCommand"
 import type { NumberRange } from "src/types"
-import { isUpdateFanCommand } from "src/responses/print/UpdateFanResponse"
+import { isUpdateFanCommand } from "src/responses"
 
 interface Fans {
 	big_1: NumberRange<0, 100>
@@ -10,6 +10,8 @@ interface Fans {
 }
 
 export class UpdateFanCommand extends GCodeCommand {
+	public command: GCodeCommandParam = "gcode_line"
+
 	public constructor(fan: keyof Fans, percent: Fans[keyof Fans]) {
 		let fanId = ""
 		switch (fan) {

@@ -1,12 +1,11 @@
 import { AbstractCommand } from "./AbstractCommand"
 import type { CommandInterface } from "./CommandInterface"
 import { LightReport } from "src/responses"
-import { isUpdateLightCommand } from "src/responses/print/UpdateLightResponse"
+import { isUpdateLightCommand } from "src/responses"
 
 export class UpdateLightCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "system"
 	public command: CommandInterface["command"] = "ledctrl"
-	public sequenceId: CommandInterface["sequenceId"] = 2003
 
 	public constructor(
 		light: LightReport["node"],
