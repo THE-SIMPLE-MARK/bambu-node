@@ -45,7 +45,7 @@ export interface PrinterData extends Optional<PushStatusResponse, "command"> {
 	model: PrinterModel | undefined
 }
 
-export type ValueOf<T> = T extends Record<any, infer V> ? V : never
+export type ValueOf<T> = T[keyof T]
 
 export type CommandResponse =
 	| InfoMessageCommand
