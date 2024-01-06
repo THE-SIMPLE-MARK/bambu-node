@@ -1,5 +1,5 @@
 import { GCodeCommand, GCodeCommandParam } from "./GCodeCommand"
-import type { NumberRange } from "src/types"
+import type { NumberRange, ValueOf } from "src/types"
 import { isUpdateFanCommand } from "src/responses"
 
 interface Fans {
@@ -12,7 +12,12 @@ interface Fans {
 export class UpdateFanCommand extends GCodeCommand {
 	public command: GCodeCommandParam = "gcode_line"
 
-	public constructor(fan: keyof Fans, percent: Fans[keyof Fans]) {
+	/**
+	 * Constructs a `print.gcode_line` command, which is able to update the current speeds of every fan on the printer.
+	 * @param fan {Fans} The fan's speed to update.
+	 * @param percent {ValueOf<Fans>} The fan's new speed in % (0-100)
+	 */
+	public constructor(fan: keyof Fans, percent: ValueOf<Fans>) {
 		let fanId = ""
 		switch (fan) {
 			case "cooling": // part cooling fan

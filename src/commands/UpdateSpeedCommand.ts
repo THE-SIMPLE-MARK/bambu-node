@@ -7,6 +7,10 @@ export class UpdateSpeedCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"
 	public command: CommandInterface["command"] = "print_speed"
 
+	/**
+	 * Constructs a `print.print_speed` command, which is able to update the speed of the printing whilst printing.
+	 * @param speed {SpeedLevel}
+	 */
 	public constructor(speed: SpeedLevel) {
 		super({ param: speed.toString() })
 	}

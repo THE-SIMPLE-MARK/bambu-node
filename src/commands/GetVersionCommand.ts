@@ -6,5 +6,12 @@ export class GetVersionCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "info"
 	public command: CommandInterface["command"] = "get_version"
 
+	/**
+	 * Constructs a new get version command.
+	 */
+	public constructor() {
+		super()
+	}
+
 	ownsResponse = isGetVersionCommand
 }

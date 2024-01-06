@@ -8,6 +8,11 @@ export class UpdateTempCommand extends GCodeCommand {
 	public constructor(part: "extruder", temperature: NumberRange<0, 300>)
 	public constructor(part: "bed", temperature: NumberRange<0, 100>)
 
+	/**
+	 * Constructs a `print.gcode_line` command, which is able to change the target temperatures of the different components of the printer.
+	 * @param part The part to change the target temperature of.
+	 * @param temperature The new target temperature in Celsius.
+	 */
 	public constructor(
 		part: "bed" | "extruder",
 		temperature: NumberRange<0, 100> | NumberRange<0, 300>

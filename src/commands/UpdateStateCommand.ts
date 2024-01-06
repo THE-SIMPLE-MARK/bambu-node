@@ -9,6 +9,10 @@ export class UpdateStateCommand extends AbstractCommand {
 	public category: CommandInterface["category"] = "print"
 	public command: CommandInterface["command"]
 
+	/**
+	 * Constructs a `print.print_speed` command, which is able to change the state of the printer, aka stop, resume or pause it.
+	 * @param state {State} The new state of the printer.
+	 */
 	public constructor(state: State) {
 		super()
 		this.command = state

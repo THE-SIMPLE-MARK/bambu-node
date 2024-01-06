@@ -8,7 +8,11 @@ export abstract class AbstractCommand implements CommandInterface {
 	public abstract command: CommandInterface["command"]
 	public sequenceId = getSequenceId()
 
-	public constructor(public extra: CommandInterface["extra"] = {}) {}
+	/**
+	 * Constructs a basic command class with the properties required for basic compatibility with bambu-node.
+	 * @param extra Extra properties to add to the request object.
+	 */
+	protected constructor(public extra: CommandInterface["extra"] = {}) {}
 
 	public invoke(client: BambuClient): Promise<void> {
 		return client.publish({
