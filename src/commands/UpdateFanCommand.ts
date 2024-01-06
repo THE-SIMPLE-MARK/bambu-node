@@ -16,11 +16,7 @@ export class UpdateFanCommand extends GCodeCommand {
 	 * @param fan {Fan} The fan's speed to update.
 	 * @param percent {NumberRange<0, 100>} The fan's new speed in % (0-100)
 	 */
-	public constructor(fan: Fan, percent: NumberRange<0, 100>) {
-		// check if the given number is not in the enum
-		if (!Object.values(Fan).includes(fan))
-			throw new Error("An unknown fan was specified!")
-
+	public constructor({ fan, percent }: { fan: Fan; percent: NumberRange<0, 100> }) {
 		super([`M106 P${fan.toString()} S${(255 * percent) / 100}`])
 	}
 

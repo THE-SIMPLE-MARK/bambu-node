@@ -10,7 +10,7 @@ export class GCodeFileCommand extends AbstractCommand {
 	 * Constructs a new GCode file command, which executes a GCode file on the printer's filesystem.
 	 * @param fileName The file name of the GCode to execute on the printer. (on the printer's filesystem)
 	 */
-	public constructor(fileName: string) {
+	public constructor({ fileName }: { fileName: string }) {
 		super({ param: fileName })
 	}
 

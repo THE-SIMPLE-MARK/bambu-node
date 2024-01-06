@@ -9,13 +9,9 @@ export class UpdateSpeedCommand extends AbstractCommand {
 
 	/**
 	 * Constructs a `print.print_speed` command, which is able to update the speed of the printing whilst printing.
-	 * @param speed {SpeedLevel}
+	 * @param speed {SpeedLevel} The new speed level to set.
 	 */
-	public constructor(speed: SpeedLevel) {
-		// check if the given number is not in the enum
-		if (!Object.values(SpeedLevel).includes(speed))
-			throw new Error("An unknown speed level was specified!")
-
+	public constructor({ speed }: { speed: SpeedLevel }) {
 		super({ param: speed.toString() })
 	}
 

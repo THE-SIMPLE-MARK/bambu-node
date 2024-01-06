@@ -8,7 +8,7 @@ export class GCodeLineCommand extends GCodeCommand {
 	 * Creates a raw GCode line command, which executes an array of GCode instructions on the printer.
 	 * @param gcodes The array of GCode instructions to execute.
 	 */
-	public constructor(gcodes: string[]) {
+	public constructor({ gcodes }: { gcodes: string[] }) {
 		super(gcodes)
 	}
 

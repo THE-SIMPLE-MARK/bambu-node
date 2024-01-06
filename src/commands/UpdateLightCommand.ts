@@ -32,16 +32,20 @@ export class UpdateLightCommand extends AbstractCommand {
 	 * @param mode The new mode of the light.
 	 * @param loopOptions Loop options of the light. Only if `mode = "flashing"`.
 	 */
-	public constructor(
-		light: LightReport["node"],
-		mode: LightReport["mode"],
-		loopOptions: UpdateLightLoopOptions = {
+	public constructor({
+		light,
+		mode,
+		loopOptions = {
 			led_on_time: 0,
 			led_off_time: 0,
 			loop_times: 0,
 			interval_time: 0,
-		}
-	) {
+		},
+	}: {
+		light: LightReport["node"]
+		mode: LightReport["mode"]
+		loopOptions: UpdateLightLoopOptions
+	}) {
 		super({
 			led_node: light,
 			led_mode: mode,
