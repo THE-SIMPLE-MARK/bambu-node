@@ -71,7 +71,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 
 	private mqttClient: mqtt.MqttClient | undefined
+	public isConnected: boolean = false
+
 	private config: ClientOptions
+
 	private _printerData: PrinterData = {
 		modules: [],
 		model: undefined,
@@ -99,9 +102,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				}
 			)
 
-			this.mqttClient.once("connect", () => resolve())
+			this.mqttClient.once("connect", () => {
+				this.isConnected = true
+				resolve()
+			})
 			this.mqttClient.on("connect", this.onConnect.bind(this))
-			this.mqttClient.on("disconnect", () => console.log("Disconnected from printer"))
+			this.mqttClient.on("disconnect", () => {
+				this.isConnected = false
+				console.log("Disconnected from printer")
+			})
 
 			this.mqttClient.on("message", (topic, message) =>
 				this.emit("rawMessage", topic, message)
@@ -132,6 +141,11 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 	private subscribe(topic: string): Promise<void> {
 		console.log(`Subscribing to "${topic}"`)
+
+		if (!this.isConnected)
+			throw new Error(
+				`Unable to subscribe to topic "${topic}" while disconnected from printer!`
+			)
 
 		return new Promise<void>((resolve, reject) => {
 			if (!this.mqttClient) {
@@ -167,6 +181,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	 * @returns {Promise<CommandResponse>}
 	 */
 	public async executeCommand(command: AbstractCommand): Promise<CommandResponse> {
+		if (!this.isConnected)
+			throw new Error(`Unable to send commands while disconnected from printer!`)
+
 		return new Promise((resolve, reject) => {
 			// run command
 			command.invoke(this).catch(err => reject(err))
