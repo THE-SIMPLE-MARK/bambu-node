@@ -12,6 +12,10 @@ export class UpdateSpeedCommand extends AbstractCommand {
 	 * @param speed {SpeedLevel}
 	 */
 	public constructor(speed: SpeedLevel) {
+		// check if the given number is not in the enum
+		if (!Object.values(SpeedLevel).includes(speed))
+			throw new Error("An unknown speed level was specified!")
+
 		super({ param: speed.toString() })
 	}
 
