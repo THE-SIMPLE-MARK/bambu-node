@@ -6,5 +6,4 @@ export interface CommandInterface {
 	extra?: Record<string, unknown>
 
 	invoke(client: BambuClient): void
-	sequenceId: number
 }

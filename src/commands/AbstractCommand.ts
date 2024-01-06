@@ -6,7 +6,6 @@ import { getSequenceId } from "../utils/sequenceIdManager"
 export abstract class AbstractCommand implements CommandInterface {
 	public abstract category: CommandInterface["category"]
 	public abstract command: CommandInterface["command"]
-	public sequenceId = getSequenceId()
 
 	/**
 	 * Constructs a basic command class with the properties required for basic compatibility with bambu-node.
@@ -17,7 +16,7 @@ export abstract class AbstractCommand implements CommandInterface {
 	public invoke(client: BambuClient): Promise<void> {
 		return client.publish({
 			[this.category]: {
-				sequence_id: "" + this.sequenceId,
+				sequence_id: getSequenceId(),
 				command: this.command,
 				...this.extra,
 			},
