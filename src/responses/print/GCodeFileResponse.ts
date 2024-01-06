@@ -8,3 +8,7 @@ export interface GCodeFileResponse extends PrintMessageCommand {
 	result: "SUCCESS" | "FAILURE" | string
 	sequence_id: StringNumber
 }
+
+export function isGcodeFileCommand(data: PrintMessageCommand): data is GCodeFileResponse {
+	return data.command === "gcode_file"
+}
