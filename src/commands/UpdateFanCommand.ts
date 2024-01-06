@@ -1,5 +1,5 @@
 import { GCodeCommand, GCodeCommandParam } from "./GCodeCommand"
-import type { NumberRange, ValueOf } from "src/types"
+import type { NumberRange } from "src/types"
 import { isUpdateFanCommand } from "src/responses"
 
 export enum Fan {
