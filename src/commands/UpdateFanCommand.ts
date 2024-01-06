@@ -14,10 +14,10 @@ export class UpdateFanCommand extends GCodeCommand {
 	/**
 	 * Constructs a `print.gcode_line` command, which is able to update the current speeds of every fan on the printer.
 	 * @param fan {Fan} The fan's speed to update.
-	 * @param percent {NumberRange<0, 100>} The fan's new speed in % (0-100)
+	 * @param speed {NumberRange<0, 100>} The fan's new speed in % (0-100).
 	 */
-	public constructor({ fan, percent }: { fan: Fan; percent: NumberRange<0, 100> }) {
-		super([`M106 P${fan.toString()} S${(255 * percent) / 100}`])
+	public constructor({ fan, speed }: { fan: Fan; speed: NumberRange<0, 100> }) {
+		super([`M106 P${fan.toString()} S${(255 * speed) / 100}`])
 	}
 
 	ownsResponse = isUpdateFanCommand
