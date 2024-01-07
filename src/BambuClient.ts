@@ -246,10 +246,13 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		const data = JSON.parse(packet)
 		const key = Object.keys(data)[0]
 
-		this.emit("message", topic, key, data)
-		console.log("onMessage: ", { topic, key, data: JSON.stringify(data[key]) })
+		if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data)))
+			return console.log("Unknown command")
 
 		if (isPrintMessage(data)) {
+			this.emit("message", topic, key, data.print)
+			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.print) })
+
 			if (isPushAllCommand(data.print) || isPushStatusCommand(data.print)) {
 				// this includes any general data updates
 
@@ -348,7 +351,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			}
 		}
 
+		if (isMCPrintMessage(data)) {
+			this.emit("message", topic, key, data.print)
+			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.print) })
+		}
+
 		if (isInfoMessage(data)) {
+			this.emit("message", topic, key, data.info)
+			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.info) })
+
 			if (isGetVersionCommand(data.info)) {
 				// merge the new data with the old data (without duplicates)
 				this._printerData.modules = [
