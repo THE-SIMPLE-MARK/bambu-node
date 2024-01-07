@@ -11,7 +11,7 @@ jobs:
       valid_commit: false
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
 
       - name: Check commit message
         id: check_commit
