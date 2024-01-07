@@ -1,0 +1,38 @@
+name: Publish to npm
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-and-publish:
+    name: Build and Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check commit message
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%B -n 1 $GITHUB_SHA)
+          if [[ $COMMIT_MESSAGE =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Commit message is valid. Proceeding with build and publish."
+          else
+            echo "Commit message does not match the pattern. Skipping build and publish."
+            exit 0
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
