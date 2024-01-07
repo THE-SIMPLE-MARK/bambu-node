@@ -183,4 +183,4 @@ you would like to change.
 
 ## License
 
-[MIT © Márk Böszörményi](LICENSE)
+[MIT © Márk Böszörményi, Aaron Scherer](LICENSE)
