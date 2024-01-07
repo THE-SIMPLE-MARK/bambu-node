@@ -12,27 +12,32 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check commit message
+        id: check_commit
         run: |
           COMMIT_MESSAGE=$(git log --format=%B -n 1 $GITHUB_SHA)
           if [[ $COMMIT_MESSAGE =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Commit message is valid. Proceeding with build and publish."
+            echo "::set-output name=valid_commit::true"
           else
             echo "Commit message does not match the pattern. Skipping build and publish."
-            exit 0
+            echo "::set-output name=valid_commit::false"
           fi
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Install dependencies
         run: npm ci
+        if: steps.check_commit.outputs.valid_commit == 'true'
 
       - name: Build the project
         run: npm run build
+        if: steps.check_commit.outputs.valid_commit == 'true'
 
       - name: Publish to npm
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: steps.check_commit.outputs.valid_commit == 'true'
