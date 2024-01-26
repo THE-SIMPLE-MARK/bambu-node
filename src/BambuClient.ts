@@ -20,6 +20,7 @@ import {
 	PrinterModel,
 } from "src/types"
 import { Job } from "./Job"
+import { createId } from "@paralleldrive/cuid2"
 
 interface ClientOptions {
 	host: string
@@ -69,6 +70,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 		return this
 	}
+
+	public id: string = createId()
 
 	private mqttClient: mqtt.MqttClient | undefined
 	public isConnected: boolean = false
