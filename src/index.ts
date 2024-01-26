@@ -1,4 +1,5 @@
 export * from "src/commands"
 export * from "src/responses"
 export * from "./types"
+export * from "./Job"
 export { BambuClient } from "./BambuClient"
