@@ -112,7 +112,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			this.mqttClient.on("connect", this.onConnect.bind(this))
 			this.mqttClient.on("disconnect", () => {
 				this.isConnected = false
-				console.log("Disconnected from printer")
 			})
 
 			this.mqttClient.on("message", (topic, message) =>
@@ -143,8 +142,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 
 	private subscribe(topic: string): Promise<void> {
-		console.log(`Subscribing to "${topic}"`)
-
 		if (!this.isConnected)
 			throw new Error(
 				`Unable to subscribe to topic "${topic}" while disconnected from printer!`
@@ -160,8 +157,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				if (error) {
 					return reject(`Error subscribing to topic '${topic}': ${error.message}`)
 				}
-
-				console.log(`Subscribed to "${topic}"`)
 			})
 
 			const listener = (receivedTopic: string, payload: Buffer) => {
@@ -181,7 +176,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	/**
 	 * Execute a command.
 	 * @param command {AbstractCommand} Command to execute.
-	 * @returns {Promise<CommandResponse>}
+	 * @returns {Promise<CommandResponse>} A promise which resolves to the CommandResponse once the command has been acknowledged by the printer, times out after 5 seconds.
 	 */
 	public async executeCommand(command: AbstractCommand): Promise<CommandResponse> {
 		if (!this.isConnected)
@@ -199,7 +194,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			// wait for a response
 			this.on("message", (topic: string, key: string, data: IncomingMessageData) => {
 				if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data)))
-					return console.log("Unknown command")
+					return
 
 				const response = data[key] as CommandResponse
 
@@ -215,8 +210,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 
 	protected async onConnect(packet: mqtt.IConnackPacket) {
-		console.log("Connected to printer")
-
 		// subscribe to the only available topic (report)
 		await this.subscribe(`device/${this.config.serialNumber}/report`)
 
@@ -249,12 +242,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		const data = JSON.parse(packet)
 		const key = Object.keys(data)[0]
 
-		if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data)))
-			return console.log("Unknown command")
+		if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data))) return
 
 		if (isPrintMessage(data)) {
 			this.emit("message", topic, key, data.print)
-			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.print) })
 
 			if (isPushAllCommand(data.print) || isPushStatusCommand(data.print)) {
 				// this includes any general data updates
@@ -356,12 +347,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 		if (isMCPrintMessage(data)) {
 			this.emit("message", topic, key, data.print)
-			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.print) })
 		}
 
 		if (isInfoMessage(data)) {
 			this.emit("message", topic, key, data.info)
-			console.log("onMessage: ", { topic, key, data: JSON.stringify(data.info) })
 
 			if (isGetVersionCommand(data.info)) {
 				// merge the new data with the old data (without duplicates)
@@ -402,8 +391,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	 * @param message
 	 */
 	public publish(message: string | object): Promise<void> {
-		console.log("Publishing to printer", { message })
-
 		return new Promise<void>((resolve, reject) => {
 			if (!this.mqttClient) {
 				return reject("Client not connected.")
@@ -414,8 +401,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			const topic = `device/${this.config.serialNumber}/request`
 
 			this.mqttClient.publish(topic, message_, error => {
-				console.log("Published message: ", { topic, message: message_, error })
-
 				if (error) {
 					return reject(`Error publishing to topic '${topic}': ${error.message}`)
 				}
