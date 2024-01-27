@@ -152,8 +152,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				return reject("Client not connected.")
 			}
 
-			// @ts-ignore
-			this.mqttClient.subscribe(topic, (error: Error | undefined) => {
+			this.mqttClient.subscribe(topic, (error: any) => {
 				if (error) {
 					return reject(`Error subscribing to topic '${topic}': ${error.message}`)
 				}
