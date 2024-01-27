@@ -37,15 +37,15 @@ npm install bambu-node
 import { BambuClient, Fan, UpdateFanCommand } from "bambu-node"
 
 // define a printer connection
-const client = new BambuClient({
-	host: "your_printers_ip",
-	accessToken: "your_printers_access_token",
-	serialNumber: "your_printers_sn",
+const client = new BambuClient({ 
+  host: "your_printers_ip", 
+  accessToken: "your_printers_access_token", 
+  serialNumber: "your_printers_sn",
 })
 
 // more about the available events below
 client.on("printer:statusUpdate", (oldStatus, newStatus) => {
-	console.log(`The printers status has changed from ${oldStatus} to ${newStatus}!`)
+	console.log(`The printer's status has changed from ${oldStatus} to ${newStatus}!`)
 })
 
 // connect to the printer
@@ -131,7 +131,7 @@ Triggered whenever a new message is received from the MQTT broker.
 
 #### `message`
 
-Triggered whenever a new <u>known</u> message is received from the MQTT broker.
+Triggered whenever a new <u>known</u> message is received from the MQTT broker. It's already parsed and sent using its type.
 
 #### `printer:dataUpdate`
 
