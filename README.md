@@ -44,6 +44,10 @@ const client = new BambuClient({
 })
 
 // more about the available events below
+client.on("message", (topic, key, data) => {
+	console.log(`New ${key} message!`, data);
+});
+
 client.on("printer:statusUpdate", (oldStatus, newStatus) => {
 	console.log(`The printer's status has changed from ${oldStatus} to ${newStatus}!`)
 })
