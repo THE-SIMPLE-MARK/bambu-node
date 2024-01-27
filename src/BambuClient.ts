@@ -21,6 +21,7 @@ import {
 } from "src/types"
 import { Job } from "./Job"
 import { createId } from "@paralleldrive/cuid2"
+import sleep from "src/utils/sleep"
 
 export interface ClientOptions {
 	host: string
@@ -209,6 +210,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	protected async onConnect(packet: mqtt.IConnackPacket) {
 		// subscribe to the only available topic (report)
 		await this.subscribe(`device/${this.config.serialNumber}/report`)
+
+		// sleep for a second so the printer has time to process the subscription
+		await sleep(1000)
 
 		// request printer version data
 		await this.executeCommand(new GetVersionCommand())
