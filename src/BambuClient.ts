@@ -190,11 +190,14 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			}, 5000)
 
 			// wait for a response
-			this.on("message", (topic: string, key: string, data: IncomingMessageData) => {
+			this.on("rawMessage", (topic: string, payload: Buffer) => {
+				const data = JSON.parse(payload.toString())
+				const key = Object.keys(data)[0]
+
 				if (!(isInfoMessage(data) || isMCPrintMessage(data) || isPrintMessage(data)))
 					return
 
-				const response = data[key] as CommandResponse
+				const response = (data as unknown as IncomingMessageData)[key] as CommandResponse
 
 				if (!response?.command) return
 
