@@ -22,7 +22,7 @@ import {
 import { Job } from "./Job"
 import { createId } from "@paralleldrive/cuid2"
 
-interface ClientOptions {
+export interface ClientOptions {
 	host: string
 	port?: number
 	accessToken: string
