@@ -158,12 +158,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				}
 			})
 
-			const listener = (receivedTopic: string, payload: Buffer) => {
-				if (receivedTopic !== topic) {
-					return
-				}
+			const listener = async (receivedTopic: string, payload: Buffer) => {
+				if (receivedTopic !== topic) return
 
-				this.onMessage(payload.toString(), topic)
+				await this.onMessage(payload.toString(), topic)
 			}
 
 			this.mqttClient.on("message", listener)
