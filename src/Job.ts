@@ -133,7 +133,7 @@ export class Job {
  *
  * WARNING: Only values which are key information when the job finishes should be added here.
  */
-interface JobData {
+export interface JobData {
 	/**
 	 * The unique CUID of the job.
 	 */
