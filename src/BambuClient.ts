@@ -77,7 +77,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	private mqttClient: mqtt.MqttClient | undefined
 	public isConnected: boolean = false
 
-	private config: ClientOptions
+	public config: ClientOptions
 
 	private _printerData: PrinterData = {
 		modules: [],
