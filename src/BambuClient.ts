@@ -96,6 +96,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 	private async connectMQTT() {
 		return new Promise<void>((resolve, reject) => {
+			// make sure that we are not already connected
+			if (this.isConnected)
+				throw new Error("Can't establish a new connection while running another one!")
+
 			this.mqttClient = mqtt.connect(
 				`mqtts://${this.config.host}:${this.config.port ?? 8883}`,
 				{
