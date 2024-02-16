@@ -44,7 +44,7 @@ export class UpdateLightCommand extends AbstractCommand {
 	}: {
 		light: LightReport["node"]
 		mode: LightReport["mode"]
-		loopOptions: UpdateLightLoopOptions
+		loopOptions?: UpdateLightLoopOptions
 	}) {
 		super({
 			led_node: light,
