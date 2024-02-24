@@ -105,7 +105,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				{
 					username: "bblp",
 					password: this.config.accessToken,
-					reconnectPeriod: 1,
+					reconnectPeriod: 5000, // try reconnecting every 5 minutes
+					resubscribe: true, // whether to auto resubscribe to topics once reconnected
 					rejectUnauthorized: false,
 				}
 			)
