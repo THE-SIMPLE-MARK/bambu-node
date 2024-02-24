@@ -10,10 +10,10 @@ import {
 	isPrintMessage,
 	isPushAllCommand,
 	isPushStatusCommand,
-	PrinterStatus,
 	PushAllResponse as PushAllCommandResponse,
 } from "src/responses"
 import {
+	BambuClientPrinterStatus,
 	CommandResponse,
 	IncomingMessageData,
 	PrinterData,
@@ -83,7 +83,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		modules: [],
 		model: undefined,
 	}
-	private _printerStatus: PrinterStatus = "IDLE"
+	private _printerStatus: BambuClientPrinterStatus = "OFFLINE"
 
 	public jobHistory: Job[] = []
 	public currentJob: Job | null = null
@@ -111,16 +111,22 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				}
 			)
 
-			this.mqttClient.once("connect", () => {
+			this.mqttClient.once("connect", async (...args) => {
 				this.isConnected = true
 
 				// while we did connect, we only resolve the promise once the onConnect logic has also (successfully) completed
 				await this.onConnect(...args)
 				resolve()
 			})
-			this.mqttClient.on("connect", this.onConnect.bind(this))
+
 			this.mqttClient.on("disconnect", () => {
 				this.isConnected = false
+				this._printerStatus = "OFFLINE"
+			})
+
+			this.mqttClient.on("offline", () => {
+				this.isConnected = false
+				this._printerStatus = "OFFLINE"
 			})
 
 			this.mqttClient.on("message", (topic, message) =>
@@ -341,8 +347,11 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 						if (this.currentJob) this.emit("job:unpause", this.currentJob)
 					} else if (
-						oldStatus === "IDLE" &&
-						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "PAUSE")
+						(oldStatus === "IDLE" || oldStatus === "OFFLINE") &&
+						(newStatus === "FINISH" ||
+							newStatus === "FAILED" ||
+							newStatus === "PAUSE" ||
+							newStatus === "IDLE")
 					) {
 						// this usually only happens when the client connects / when we connect into a paused job
 						// all of which we ignore
@@ -426,7 +435,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 		return this._printerData
 	}
 
-	public get status(): PrinterStatus {
+	public get status(): BambuClientPrinterStatus {
 		return this._printerStatus
 	}
 }

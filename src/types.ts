@@ -1,6 +1,7 @@
 import {
 	InfoMessageCommand,
 	MCPrintMessageCommand,
+	PrinterStatus,
 	PrintMessageCommand,
 	PushStatusResponse,
 	VersionModule,
@@ -51,3 +52,5 @@ export type CommandResponse =
 	| InfoMessageCommand
 	| MCPrintMessageCommand
 	| PrintMessageCommand
+
+export type BambuClientPrinterStatus = PrinterStatus | "OFFLINE"
