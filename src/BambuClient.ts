@@ -113,6 +113,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 			this.mqttClient.once("connect", () => {
 				this.isConnected = true
+
+				// while we did connect, we only resolve the promise once the onConnect logic has also (successfully) completed
+				await this.onConnect(...args)
 				resolve()
 			})
 			this.mqttClient.on("connect", this.onConnect.bind(this))
@@ -135,7 +138,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	 * Connect to the printer.
 	 */
 	public async connect() {
-		return Promise.all([this.connectMQTT()])
+		return await Promise.all([this.connectMQTT()])
 	}
 
 	/**
