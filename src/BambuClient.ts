@@ -74,7 +74,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 	public id: string = createId()
 
-	private mqttClient: mqtt.MqttClient | undefined
+	private mqttClient: mqtt.MqttClient | undefined = undefined
 	public isConnected: boolean = false
 
 	public config: ClientOptions
