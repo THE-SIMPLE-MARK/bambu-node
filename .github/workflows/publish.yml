@@ -32,15 +32,15 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         if: env.valid_commit == 'true'
 
       - name: Build the project
-        run: npm run build
+        run: pnpm run build
         if: env.valid_commit == 'true'
 
       - name: Publish to npm
-        run: npm publish
+        run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: env.valid_commit == 'true'
