@@ -24,6 +24,11 @@ jobs:
             echo "Commit message does not match the pattern. Skipping build and publish."
             echo "valid_commit=false" >> $GITHUB_ENV
           fi
+          
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
