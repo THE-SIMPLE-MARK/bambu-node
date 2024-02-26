@@ -28,6 +28,7 @@ export interface ClientOptions {
 	port?: number
 	accessToken: string
 	serialNumber: string
+	throwOnOfflineCommands?: boolean
 }
 
 /**
@@ -173,7 +174,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 
 	private subscribe(topic: string): Promise<void> {
-		if (!this.isConnected)
+		if (!this.isConnected && this.config.throwOnOfflineCommands)
 			throw new Error(
 				`Unable to subscribe to topic "${topic}" while disconnected from printer!`
 			)
@@ -207,7 +208,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	 * @returns {Promise<CommandResponse>} A promise which resolves to the CommandResponse once the command has been acknowledged by the printer, times out after 5 seconds.
 	 */
 	public async executeCommand(command: AbstractCommand): Promise<CommandResponse> {
-		if (!this.isConnected)
+		if (!this.isConnected && this.config.throwOnOfflineCommands)
 			throw new Error(`Unable to send commands while disconnected from printer!`)
 
 		return new Promise((resolve, reject) => {
