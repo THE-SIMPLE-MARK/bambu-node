@@ -167,8 +167,9 @@ Triggered whenever the current print job is paused.
 
 #### `job:pause:wasOffline`
 
-Triggered whenever a new job is created for a print that was in progress before.
-This can trigger after a power outage to the printer, when the printer puts the job into the `PAUSE` state and waits for user confirmation to continue.
+Triggered whenever a new job is created for a print that was in progress before. This can
+trigger after a power outage to the printer, when the printer puts the job into the
+`PAUSE` state and waits for user confirmation to continue.
 
 #### `job:unpause`
 
