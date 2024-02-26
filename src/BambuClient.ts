@@ -29,6 +29,9 @@ export interface ClientOptions {
 	accessToken: string
 	serialNumber: string
 	throwOnOfflineCommands?: boolean
+	reconnectInterval?: number
+	connectTimeout?: number
+	keepAlive?: number
 }
 
 /**
@@ -78,7 +81,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	private mqttClient: mqtt.MqttClient | undefined = undefined
 	public isConnected: boolean = false
 
-	public config: ClientOptions
+	public config
 
 	private _printerData: PrinterData = {
 		modules: [],
@@ -104,7 +107,16 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	public constructor(public readonly clientOptions: ClientOptions) {
 		super()
 
-		this.config = clientOptions
+		this.config = {
+			host: clientOptions.host,
+			port: clientOptions.port ?? 8883,
+			accessToken: clientOptions.accessToken,
+			serialNumber: clientOptions.serialNumber,
+			throwOnOfflineCommands: clientOptions.throwOnOfflineCommands ?? false,
+			reconnectInterval: clientOptions.reconnectInterval ?? 1000,
+			connectTimeout: clientOptions.connectTimeout ?? 2000,
+			keepAlive: clientOptions.keepAlive ?? 20,
+		}
 	}
 
 	private async connectMQTT() {
@@ -113,18 +125,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			if (this.isConnected)
 				throw new Error("Can't establish a new connection while running another one!")
 
-			this.mqttClient = mqtt.connect(
-				`mqtts://${this.config.host}:${this.config.port ?? 8883}`,
-				{
-					username: "bblp",
-					password: this.config.accessToken,
-					reconnectPeriod: 1,
-					resubscribe: true,
-					connectTimeout: 2000,
-					rejectUnauthorized: false,
-					keepalive: 20,
-				}
-			)
+			this.mqttClient = mqtt.connect(`mqtts://${this.config.host}:${this.config.port}`, {
+				username: "bblp",
+				password: this.config.accessToken,
+				reconnectPeriod: this.clientOptions.reconnectInterval,
+				connectTimeout: this.clientOptions.connectTimeout,
+				keepalive: this.clientOptions.keepAlive,
+				resubscribe: true,
+				rejectUnauthorized: false,
+			})
 
 			this.mqttClient.on("connect", async (...args) => {
 				this.isConnected = true
