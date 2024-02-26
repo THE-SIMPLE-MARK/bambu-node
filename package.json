@@ -1,6 +1,6 @@
 {
 	"name": "bambu-node",
-	"version": "1.9.8",
+	"version": "1.10.9",
 	"description": "A node.js library for connecting to and receiving data from Bambu Lab printers through their MQTT servers.",
 	"main": "./dist/index.js",
 	"module": "./dist/index.js",
