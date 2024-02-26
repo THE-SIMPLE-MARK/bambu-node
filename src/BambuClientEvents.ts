@@ -1,5 +1,4 @@
 import type { BambuClientPrinterStatus, IncomingMessageData, PrinterData } from "./types"
-import type { PrinterStatus } from "./responses"
 import type { Job } from "./Job"
 
 export interface BambuClientEvents {
