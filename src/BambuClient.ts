@@ -85,6 +85,18 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 	private _printerStatus: BambuClientPrinterStatus = "OFFLINE"
 
+	private isInitialized: boolean = false
+
+	/**
+	 * A job that would've been created before init but couldn't due to the lack of data.
+	 * The object contains the date the job would've been created at and the type of event that needs to be emitted.
+	 * @private
+	 */
+	private preInitJob: {
+		type: "CREATE" | "CREATE_OFFLINE" | "PAUSE"
+		createdAt: Date
+	} | null = null
+
 	public jobHistory: Job[] = []
 	public currentJob: Job | null = null
 
@@ -105,13 +117,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				{
 					username: "bblp",
 					password: this.config.accessToken,
-					reconnectPeriod: 5000, // try reconnecting every 5 minutes
-					resubscribe: true, // whether to auto resubscribe to topics once reconnected
+					reconnectPeriod: 1,
+					resubscribe: true,
+					connectTimeout: 2000,
 					rejectUnauthorized: false,
+					keepalive: 20,
 				}
 			)
 
-			this.mqttClient.once("connect", async (...args) => {
+			this.mqttClient.on("connect", async (...args) => {
 				this.isConnected = true
 
 				// while we did connect, we only resolve the promise once the onConnect logic has also (successfully) completed
@@ -121,11 +135,13 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 			this.mqttClient.on("disconnect", () => {
 				this.isConnected = false
+				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
 			})
 
 			this.mqttClient.on("offline", () => {
 				this.isConnected = false
+				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
 			})
 
@@ -254,6 +270,31 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 				5 * 60 * 1000 // 5 minutes
 			)
 		}
+
+		this.isInitialized = true
+
+		// check if any jobs would've been created before init and create them now
+		if (this.preInitJob) {
+			// We will probably never have any previous jobs is very slim, as this is
+			//  a fresh reboot and the window this edge case even happens is a couple of ms.
+			// But we'll preserve any history there is anyway
+			if (this.currentJob) this.jobHistory.push(this.currentJob)
+
+			this.currentJob = new Job(
+				this._printerData as PushAllCommandResponse, // we've already queried all the data
+				this.id
+			)
+
+			if (this.preInitJob.type === "CREATE") {
+				this.emit("job:start", this.currentJob)
+			} else if (this.preInitJob.type === "CREATE_OFFLINE") {
+				this.emit("job:start", this.currentJob)
+				this.emit("job:start:wasOffline", this.currentJob)
+			} else if (this.preInitJob.type === "PAUSE") {
+				this.emit("job:pause", this.currentJob)
+				this.emit("job:pause:wasOffline", this.currentJob)
+			}
+		}
 	}
 
 	private async onMessage(packet: string, topic: string) {
@@ -288,24 +329,49 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 					// we treat PREPARE and SLICING as an alias of idle because they're of no use
 					if (newStatus === "PREPARE" || newStatus === "SLICING") newStatus = "IDLE"
-					if (oldStatus === "PREPARE" || oldStatus === "SLICING") newStatus = "RUNNING"
+					if (oldStatus === "PREPARE" || oldStatus === "SLICING") oldStatus = "RUNNING"
 
 					if (
-						(oldStatus === "IDLE" || oldStatus === "FINISH" || oldStatus === "FAILED") &&
+						(oldStatus === "OFFLINE" ||
+							oldStatus === "IDLE" ||
+							oldStatus === "FINISH" ||
+							oldStatus === "FAILED") &&
 						newStatus === "RUNNING"
 					) {
 						// print start
+						// this can also happen when the client connects into an ongoing job
+
+						// we might receive a print start event before we've initialized (have all the data)
+						// => we reschedule any job start events to after the initialization (always less than 3s, but closer to 500ms)
+
+						// throw an error if we haven't initialized yet, but we already have a new Job
+						if (!this.isInitialized && this.preInitJob)
+							throw new Error(
+								"Tried to add a second job before the first one could be initialized! Handling this isn't currently done. Feel free to open a pull request if you need this feature."
+							)
+
+						// put the current job that would've been created to the preInitJob property, so it can be created right after init
+						if (!this.isInitialized) {
+							// push the current date to the preInitJobs array, so they can be created later
+							this.preInitJob = {
+								type: "CREATE",
+								createdAt: new Date(),
+							}
+							return
+						}
 
 						// move current job to jobHistory
 						if (this.currentJob !== null) this.jobHistory.push(this.currentJob)
 
 						// create new job and set it as the current job
 						this.currentJob = new Job(
-							data.print as PushAllCommandResponse,
-							this._printerData.model as PrinterModel
+							this._printerData as PushAllCommandResponse, // if we don't have all the data we would've already rescheduled
+							this.id
 						)
 
 						this.emit("job:start", this.currentJob)
+						if (oldStatus === "OFFLINE")
+							this.emit("job:start:wasOffline", this.currentJob)
 					} else if (
 						oldStatus === "RUNNING" &&
 						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "IDLE")
@@ -346,15 +412,44 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 						// unpaused
 
 						if (this.currentJob) this.emit("job:unpause", this.currentJob)
+					} else if (oldStatus === "OFFLINE" && newStatus === "PAUSE") {
+						// this happens when the printer resumes a job from a power outage
+
+						// we might receive this event before we've initialized (have all the data)
+						// => we reschedule any of these events to after the initialization (always less than 3s, but closer to 500ms)
+
+						// throw an error if we haven't initialized yet, but we already have a new Job
+						if (!this.isInitialized && this.preInitJob)
+							throw new Error(
+								"Tried to add a second job after a power outage before the first one could be initialized! Handling this isn't currently done. Feel free to open a pull request if you need this feature."
+							)
+
+						// put the current job that would've been created to the preInitJob property, so it can be created right after init
+						if (!this.isInitialized) {
+							// push the current date to the preInitJobs array, so they can be created later
+							this.preInitJob = {
+								type: "CREATE",
+								createdAt: new Date(),
+							}
+							return
+						}
+
+						// move current job to jobHistory
+						if (this.currentJob !== null) this.jobHistory.push(this.currentJob)
+
+						// create new job and set it as the current job
+						this.currentJob = new Job(
+							this._printerData as PushAllCommandResponse, // if we don't have all the data we would've already rescheduled
+							this.id
+						)
+
+						this.emit("job:pause:wasOffline", this.currentJob)
+						this.emit("job:pause", this.currentJob)
 					} else if (
 						(oldStatus === "IDLE" || oldStatus === "OFFLINE") &&
-						(newStatus === "FINISH" ||
-							newStatus === "FAILED" ||
-							newStatus === "PAUSE" ||
-							newStatus === "IDLE")
+						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "IDLE")
 					) {
-						// this usually only happens when the client connects / when we connect into a paused job
-						// all of which we ignore
+						// this usually only happens when the client connects, all of which we ignore
 					} else if (oldStatus !== newStatus) {
 						// does not match but not "caught" before
 						throw new Error("Edge case detected while updating printer status!")

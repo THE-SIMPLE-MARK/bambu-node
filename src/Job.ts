@@ -1,4 +1,3 @@
-import { PrinterModel } from "./types"
 import { HMS, PrinterStatus, PrintStage, PushAllResponse } from "./responses"
 import { createId } from "@paralleldrive/cuid2"
 
@@ -11,12 +10,14 @@ const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
 export class Job {
 	private _jobData: JobData
 
-	public constructor(data: PushAllResponse, printerModel: PrinterModel) {
-		const currentDate = new Date()
-
+	public constructor(
+		data: PushAllResponse,
+		printerId: string,
+		createdAt: Date = new Date()
+	) {
 		this._jobData = {
 			id: createId(),
-			printer: printerModel,
+			printerId: printerId,
 			name: data.subtask_name.replace(FILE_EXT_REGEX, ""),
 			fileName: data.subtask_name,
 			gcodeName: data.gcode_file,
@@ -31,29 +32,29 @@ export class Job {
 			statusHistory: [
 				{
 					status: data.gcode_state,
-					changedAt: currentDate,
+					changedAt: createdAt,
 				},
 			],
 			speedLevelHistory: [
 				{
 					speedLevel: data.spd_lvl,
 					speedMagnitude: data.spd_mag,
-					changedAt: currentDate,
+					changedAt: createdAt,
 				},
 			],
 			printingStageHistory: [
 				{
 					stage: data.stg_cur,
-					changedAt: currentDate,
+					changedAt: createdAt,
 				},
 			],
 			errorCodes: data.hms.map(hmsCode => ({
 				attr: hmsCode.attr,
 				code: hmsCode.code,
-				thrownAt: currentDate,
+				thrownAt: createdAt,
 				layerNumber: data.layer_num,
 			})),
-			createdAt: currentDate,
+			createdAt: createdAt,
 		}
 	}
 
@@ -139,9 +140,9 @@ export interface JobData {
 	 */
 	id: string
 	/**
-	 * The printer model.
+	 * The ID of the printer who created this job.
 	 */
-	printer: PrinterModel
+	printerId: string
 	/**
 	 * The name of the job.
 	 *

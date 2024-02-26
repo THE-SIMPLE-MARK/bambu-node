@@ -11,7 +11,9 @@ export interface BambuClientEvents {
 		newStatus: BambuClientPrinterStatus,
 	]
 	"job:start": [job: Job]
+	"job:start:wasOffline": [job: Job]
 	"job:pause": [job: Job]
+	"job:pause:wasOffline": [job: Job]
 	"job:unpause": [job: Job]
 	"job:finish": [job: Job]
 	"job:finish:success": [job: Job]
