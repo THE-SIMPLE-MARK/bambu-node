@@ -86,7 +86,9 @@ classes are documented here.
     - [Event: `printer:dataUpdate`](#printerdataupdate)
     - [Event: `printer:statusUpdate`](#printerstatusupdate)
     - [Event: `job:start`](#jobstart)
+    - [Event: `job:start:wasOffline`](#jobstartwasoffline)
     - [Event: `job:pause`](#jobpause)
+    - [Event: `job:pause:wasOffline`](#jobpausewasoffline)
     - [Event: `job:unpause`](#jobunpause)
     - [Event: `job:finish`](#jobfinish)
     - [Event: `job:finish:success`](#jobfinishsuccess)
@@ -154,9 +156,19 @@ Triggered whenever the printer's status changes to a new status.
 
 Triggered whenever a new printing job starts.
 
+#### `job:start:wasOffline`
+
+Triggered whenever a new job is created for a print that was in progress before.  
+This can trigger when the client connects mid-print.
+
 #### `job:pause`
 
 Triggered whenever the current print job is paused.
+
+#### `job:pause:wasOffline`
+
+Triggered whenever a new job is created for a print that was in progress before.
+This can trigger after a power outage to the printer, when the printer puts the job into the `PAUSE` state and waits for user confirmation to continue.
 
 #### `job:unpause`
 
