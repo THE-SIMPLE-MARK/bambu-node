@@ -9,7 +9,7 @@ const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
  *
  */
 export class Job {
-	private _jobData: JobData | undefined
+	private _jobData: JobData
 
 	public constructor(data: PushAllResponse, printerModel: PrinterModel) {
 		const currentDate = new Date()
