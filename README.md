@@ -85,13 +85,10 @@ classes are documented here.
     - [Event: `rawMessage`](#rawmessage)
     - [Event: `client:connect`](#clientconnect)
     - [Event: `client:disconnect`](#clientdisconnect)
-    - [Event: `client:disconnect:offline`](#clientdisconnectoffline)
     - [Event: `printer:dataUpdate`](#printerdataupdate)
     - [Event: `printer:statusUpdate`](#printerstatusupdate)
     - [Event: `job:start`](#jobstart)
-    - [Event: `job:start:wasOffline`](#jobstartwasoffline)
     - [Event: `job:pause`](#jobpause)
-    - [Event: `job:pause:wasOffline`](#jobpausewasoffline)
     - [Event: `job:unpause`](#jobunpause)
     - [Event: `job:finish`](#jobfinish)
     - [Event: `job:finish:success`](#jobfinishsuccess)
@@ -156,12 +153,6 @@ reconnect.
 Triggered whenever the client disconnects from the printer. This can be on purpose using
 the `client#disconnect` method or when the printer itself goes offline.
 
-#### `client:disconnect:offline`
-
-Triggered whenever the printer itself goes offline. This is checked by pinging the host IP
-itself. The delay between when the printer goes offline and this event is fired can be
-changed by the `keepAlive` property on the client options.
-
 #### `client:error`
 
 Triggered whenever the internal MQTT client encounters an error.
@@ -185,20 +176,9 @@ Triggered whenever the printer's status changes to a new status.
 
 Triggered whenever a new printing job starts.
 
-#### `job:start:wasOffline`
-
-Triggered whenever a new job is created for a print that was in progress before.  
-This can trigger when the client connects mid-print.
-
 #### `job:pause`
 
 Triggered whenever the current print job is paused.
-
-#### `job:pause:wasOffline`
-
-Triggered whenever a new job is created for a print that was in progress before. This can
-trigger after a power outage to the printer, when the printer puts the job into the
-`PAUSE` state and waits for user confirmation to continue.
 
 #### `job:unpause`
 

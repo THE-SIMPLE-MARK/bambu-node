@@ -5,8 +5,7 @@ export interface BambuClientEvents {
 	message: [topic: string, key: string, data: IncomingMessageData]
 	rawMessage: [topic: string, payload: Buffer]
 	"client:connect": []
-	"client:disconnect": []
-	"client:disconnect:offline": []
+	"client:disconnect": [isDisconnectOffline: boolean]
 	"client:error": [error: Error]
 	"printer:dataUpdate": [data: PrinterData]
 	"printer:statusUpdate": [
@@ -14,9 +13,8 @@ export interface BambuClientEvents {
 		newStatus: BambuClientPrinterStatus,
 	]
 	"job:start": [job: Job]
-	"job:start:wasOffline": [job: Job]
 	"job:pause": [job: Job]
-	"job:pause:wasOffline": [job: Job]
+	"job:offlineRecovery": [job: Job]
 	"job:unpause": [job: Job]
 	"job:finish": [job: Job]
 	"job:finish:success": [job: Job]
