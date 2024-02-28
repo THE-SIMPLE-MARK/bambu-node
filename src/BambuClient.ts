@@ -319,9 +319,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 				this.emit("printer:dataUpdate", this._printerData)
 
-				// update job data
-				if (this.currentJob) this.currentJob.update(data.print)
-
 				// printer status updates and job creation
 				if (data.print.gcode_state && data.print.gcode_state !== this._printerStatus) {
 					let oldStatus = this._printerStatus
@@ -459,6 +456,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 					// set old status as the new status
 					this._printerStatus = data.print.gcode_state
+
+					// update job data
+					if (this.currentJob) this.currentJob.update(data.print)
 				}
 			}
 		}
