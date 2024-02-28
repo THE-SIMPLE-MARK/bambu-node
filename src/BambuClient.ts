@@ -112,7 +112,6 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	public id: string = createId()
 
 	private mqttClient: mqtt.MqttClient | undefined = undefined
-	public isConnected: boolean = false
 
 	public config
 
@@ -155,7 +154,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	private async connectMQTT() {
 		return new Promise<void>((resolve, reject) => {
 			// make sure that we are not already connected
-			if (this.isConnected)
+			if (this.mqttClient)
 				throw new Error("Can't establish a new connection while running another one!")
 
 			this.mqttClient = mqtt.connect(`mqtts://${this.config.host}:${this.config.port}`, {
@@ -169,21 +168,18 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			})
 
 			this.mqttClient.on("connect", async (...args) => {
-				this.isConnected = true
-
 				// while we did connect, we only resolve the promise once the onConnect logic has also (successfully) completed
 				await this.onConnect(...args)
 				resolve()
 			})
 
 			this.mqttClient.on("disconnect", () => {
-				this.isConnected = false
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
 			})
 
 			this.mqttClient.on("offline", () => {
-				this.isConnected = false
+
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
 			})
@@ -216,7 +212,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	}
 
 	private subscribe(topic: string): Promise<void> {
-		if (!this.isConnected && this.config.throwOnOfflineCommands)
+		if (!(this._printerStatus === "OFFLINE") && this.config.throwOnOfflineCommands)
 			throw new Error(
 				`Unable to subscribe to topic "${topic}" while disconnected from printer!`
 			)
@@ -250,7 +246,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 	 * @returns {Promise<CommandResponse>} A promise which resolves to the CommandResponse once the command has been acknowledged by the printer, times out after 5 seconds.
 	 */
 	public async executeCommand(command: AbstractCommand): Promise<CommandResponse> {
-		if (!this.isConnected && this.config.throwOnOfflineCommands)
+		if (!(this._printerStatus === "OFFLINE") && this.config.throwOnOfflineCommands)
 			throw new Error(`Unable to send commands while disconnected from printer!`)
 
 		return new Promise((resolve, reject) => {
