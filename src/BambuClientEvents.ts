@@ -4,6 +4,10 @@ import type { Job } from "./Job"
 export interface BambuClientEvents {
 	message: [topic: string, key: string, data: IncomingMessageData]
 	rawMessage: [topic: string, payload: Buffer]
+	"client:connect": []
+	"client:disconnect": []
+	"client:disconnect:offline": []
+	"client:error": [error: Error]
 	"printer:dataUpdate": [data: PrinterData]
 	"printer:statusUpdate": [
 		oldStatus: BambuClientPrinterStatus,

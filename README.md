@@ -83,6 +83,9 @@ classes are documented here.
     - Method: `BambuClient.executeCommand(command)`
     - [Event: `message`](#message)
     - [Event: `rawMessage`](#rawmessage)
+    - [Event: `client:connect`](#clientconnect)
+    - [Event: `client:disconnect`](#clientdisconnect)
+    - [Event: `client:disconnect:offline`](#clientdisconnectoffline)
     - [Event: `printer:dataUpdate`](#printerdataupdate)
     - [Event: `printer:statusUpdate`](#printerstatusupdate)
     - [Event: `job:start`](#jobstart)
@@ -142,6 +145,32 @@ Triggered whenever a new message is received from the MQTT broker.
 
 Triggered whenever a new <u>known</u> message is received from the MQTT broker. It's
 already parsed and sent using its type.
+
+#### `client:connect`
+
+Triggered whenever the client connects to the printer. This will also trigger on a
+reconnect.
+
+#### `client:disconnect`
+
+Triggered whenever the client disconnects from the printer. This can be on purpose using
+the `client#disconnect` method or when the printer itself goes offline.
+
+#### `client:disconnect:offline`
+
+Triggered whenever the printer itself goes offline. This is checked by pinging the host IP
+itself. The delay between when the printer goes offline and this event is fired can be
+changed by the `keepAlive` property on the client options.
+
+#### `client:error`
+
+Triggered whenever the internal MQTT client encounters an error.
+
+Examples include:
+
+- Unresolvable host provided
+- Incorrect credentials provided
+- Unexpected responses
 
 #### `printer:dataUpdate`
 

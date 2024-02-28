@@ -170,6 +170,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			this.mqttClient.on("connect", async (...args) => {
 				// while we did connect, we only resolve the promise once the onConnect logic has also (successfully) completed
 				await this.onConnect(...args)
+
+				this.emit("client:connect")
+
 				resolve()
 			})
 
@@ -179,6 +182,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			})
 
 			this.mqttClient.on("offline", () => {
+				this.emit("client:disconnect")
+				this.emit("client:disconnect:offline")
 
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
@@ -189,8 +194,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			)
 
 			this.mqttClient.on("error", err => {
-				console.error("Error while trying to connect to printer:", err.message)
-				reject(err)
+				this.emit("client:error", err)
+
+				reject(err) // this will obviously only work if we haven't connected before
 			})
 		})
 	}
