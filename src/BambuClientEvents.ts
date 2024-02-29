@@ -1,7 +1,7 @@
 import type { BambuClientPrinterStatus, IncomingMessageData, PrinterData } from "./types"
 import type { Job } from "src/Job"
 
-export type FinishReason = "SUCCESS" | "FAILED" | "UNEXPECTED"
+export type FinishOutcome = "SUCCESS" | "FAILED" | "UNEXPECTED"
 
 export interface BambuClientEvents {
 	message: [topic: string, key: string, data: IncomingMessageData]
@@ -19,5 +19,5 @@ export interface BambuClientEvents {
 	"job:pause": [job: Job]
 	"job:offlineRecovery": [job: Job]
 	"job:unpause": [job: Job]
-	"job:finish": [job: Job, reason: FinishReason]
+	"job:finish": [job: Job, outcome: FinishOutcome]
 }
