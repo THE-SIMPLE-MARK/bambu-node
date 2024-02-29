@@ -321,25 +321,21 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 							// finished with no errors
 
 							if (this.currentJob !== null)
-								this.emit("job:finish:success", this.currentJob)
+								this.emit("job:finish", this.currentJob, "SUCCESS")
 						} else if (newStatus === "FAILED") {
 							// finished with errors
 
 							if (this.currentJob !== null)
-								this.emit("job:finish:success", this.currentJob)
+								this.emit("job:finish", this.currentJob, "FAILED")
 						} else if (newStatus === "IDLE") {
 							// unexpected finish
 
 							if (this.currentJob !== null)
-								this.emit("job:finish:unexpected", this.currentJob)
+								this.emit("job:finish", this.currentJob, "UNEXPECTED")
 						}
 
-						if (this.currentJob !== null) {
-							// move currentJob to jobHistory
-							this.jobHistory.push(this.currentJob)
-
-							this.emit("job:finish", this.currentJob)
-						}
+						// move currentJob to jobHistory
+						if (this.currentJob !== null) this.jobHistory.push(this.currentJob)
 
 						// empty currentJob
 						this.currentJob = null
