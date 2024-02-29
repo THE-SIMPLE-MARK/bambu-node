@@ -91,9 +91,6 @@ classes are documented here.
     - [Event: `job:pause`](#jobpause)
     - [Event: `job:unpause`](#jobunpause)
     - [Event: `job:finish`](#jobfinish)
-    - [Event: `job:finish:success`](#jobfinishsuccess)
-    - [Event: `job:finish:failed`](#jobfinishfailed)
-    - [Event: `job:finish:unexpected`](#jobfinishunexpected)
   - [Class: `Job`](#class-job)
     - Method: `Job.update(data)`
     - Getter: `Job.data`
@@ -188,18 +185,12 @@ Triggered whenever the current print job is resumed.
 
 Triggered whenever the current print job finishes.
 
-##### `job:finish:success`
+Possible reasons:
 
-Triggered whenever the current print job finishes without errors.
-
-##### `job:finish:failed`
-
-Triggered whenever the current print job finishes without errors.
-
-##### `job:finish:unexpected`
-
-Triggered whenever the current print job finishes unexpectedly. This is only included as a
-proof of concept and is 99% bound to never happen.
+- `SUCCESS`: Triggered whenever the current print job finishes without errors.
+- `FAILED`: Triggered whenever the current print job finishes without errors.
+- `UNEXPECTED`: Triggered whenever the current print job finishes unexpectedly. This is
+  only included as a proof of concept and is 99% bound to never happen.
 
 ### Class: Job
 
