@@ -1,3 +1,5 @@
+import { Job } from "src/Job"
+
 export interface BambuClientOptions {
 	/**
 	 * The IP address / URL of the printer.
@@ -40,4 +42,16 @@ export interface BambuClientOptions {
 	 * @default 20
 	 */
 	keepAlive?: number
+	/**
+	 * An array of jobs to load into the `jobHistory` array.
+	 *
+	 * You can use any kind of persistent storage to persist jobs and them load them back in to query them if need be.
+	 */
+	jobHistory?: Job[]
+	/**
+	 * The job to load into the `currentJob` array.
+	 *
+	 * You can use any kind of persistent storage to persist jobs and them load them back in to query them if need be.
+	 */
+	currentJob?: Job
 }

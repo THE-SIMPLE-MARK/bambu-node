@@ -94,6 +94,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			connectTimeout: clientOptions.connectTimeout ?? 2000,
 			keepAlive: clientOptions.keepAlive ?? 20,
 		}
+
+		this.jobHistory = clientOptions.jobHistory ?? []
+		this.currentJob = clientOptions.currentJob ?? null
 	}
 
 	private async connectMQTT() {
