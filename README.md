@@ -87,6 +87,7 @@ classes are documented here.
     - [Event: `client:disconnect`](#clientdisconnect)
     - [Event: `printer:dataUpdate`](#printerdataupdate)
     - [Event: `printer:statusUpdate`](#printerstatusupdate)
+    - [Event: `job:update`](#jobupdate)
     - [Event: `job:start`](#jobstart)
     - [Event: `job:pause`](#jobpause)
     - [Event: `job:unpause`](#jobunpause)
@@ -168,6 +169,10 @@ field.
 #### `printer:statusUpdate`
 
 Triggered whenever the printer's status changes to a new status.
+
+#### `job:update`
+
+Triggered whenever the current Job's data gets updated.
 
 #### `job:start`
 
