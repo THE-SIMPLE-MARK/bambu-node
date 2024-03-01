@@ -125,6 +125,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 			})
 
 			this.mqttClient.on("disconnect", () => {
+				this.emit("client:disconnect", false)
+
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
 			})
