@@ -90,6 +90,7 @@ classes are documented here.
     - [Event: `job:update`](#jobupdate)
     - [Event: `job:start`](#jobstart)
     - [Event: `job:pause`](#jobpause)
+    - [Event: `job:offlineRecovery`](#jobofflineRecovery)
     - [Event: `job:unpause`](#jobunpause)
     - [Event: `job:finish`](#jobfinish)
   - [Class: `Job`](#class-job)
@@ -181,6 +182,11 @@ Triggered whenever a new printing job starts.
 #### `job:pause`
 
 Triggered whenever the current print job is paused.
+
+#### `job:offlineRecovery`
+
+Triggered whenever the current print job was recovered after the printer came back online
+from an offline state.
 
 #### `job:unpause`
 
