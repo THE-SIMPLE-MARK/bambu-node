@@ -129,6 +129,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
+
+				if (this.currentJob) this.emit("job:pause", this.currentJob, true)
 			})
 
 			this.mqttClient.on("offline", () => {
@@ -136,6 +138,8 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 				this.emit("printer:statusUpdate", this._printerStatus, "OFFLINE")
 				this._printerStatus = "OFFLINE"
+
+				if (this.currentJob) this.emit("job:pause", this.currentJob, true)
 			})
 
 			this.mqttClient.on("message", (topic, message) =>
@@ -344,7 +348,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 					} else if (oldStatus === "RUNNING" && newStatus === "PAUSE") {
 						// paused
 
-						if (this.currentJob) this.emit("job:pause", this.currentJob)
+						if (this.currentJob) this.emit("job:pause", this.currentJob, false)
 					} else if (oldStatus === "PAUSE" && newStatus === "RUNNING") {
 						// unpaused
 

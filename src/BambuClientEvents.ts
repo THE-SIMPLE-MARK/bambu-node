@@ -16,7 +16,7 @@ export interface BambuClientEvents {
 	]
 	"job:update": [job: Job]
 	"job:start": [job: Job]
-	"job:pause": [job: Job]
+	"job:pause": [job: Job, isClientOffline: boolean]
 	"job:offlineRecovery": [job: Job]
 	"job:unpause": [job: Job]
 	"job:finish": [job: Job, outcome: FinishOutcome]
