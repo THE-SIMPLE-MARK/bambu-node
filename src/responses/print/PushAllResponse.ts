@@ -84,11 +84,11 @@ export interface PushAllResponse extends PrintMessageCommand {
 	/**
 	 * The target temperature of the printing bed in Celsius.
 	 */
-	bed_target_temper: number // bed target temperature
+	bed_target_temper: number
 	/**
 	 * The temperature of the printing bed in Celsius.
 	 */
-	bed_temper: number // bed temperature
+	bed_temper: number
 	/**
 	 * Speed of the auxiliary fan in %.
 	 */
