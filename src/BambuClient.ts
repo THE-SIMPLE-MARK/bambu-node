@@ -312,8 +312,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 						// create new job and set it as the current job
 						this.currentJob = new Job(
-							this._printerData as PushAllCommandResponse, // if we don't have all the data we would've already rescheduled
-							this.id
+							this._printerData as PushAllCommandResponse, // we get all the data right at initialization => we must have all of it by now
+							this.id,
+							this._printerData.model! // we get the printer model right at initialization => we must have it by now
 						)
 
 						this.emit("job:start", this.currentJob)

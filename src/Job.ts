@@ -1,5 +1,6 @@
 import { HMS, PrinterStatus, PrintStage, PushAllResponse } from "./responses"
 import { createId } from "@paralleldrive/cuid2"
+import { PrinterModel } from "./types"
 
 const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
 
@@ -13,11 +14,15 @@ export class Job {
 	public constructor(
 		data: PushAllResponse,
 		printerId: string,
+		printerModel: PrinterModel,
 		createdAt: Date = new Date()
 	) {
+		const isP1Series = [PrinterModel.P1P, PrinterModel.P1S].includes(printerModel)
+
 		this._jobData = {
 			id: createId(),
 			printerId: printerId,
+			printerModel: printerModel,
 			name: data.subtask_name.replace(FILE_EXT_REGEX, ""),
 			fileName: data.subtask_name,
 			gcodeName: data.gcode_file,
@@ -48,6 +53,17 @@ export class Job {
 					changedAt: createdAt,
 				},
 			],
+			temperatureHistory: [
+				{
+					bedTemp: data.bed_temper,
+					bedTargetTemp: data.bed_target_temper,
+					interiorTemp: isP1Series ? data.frame_temper : data.chamber_temper,
+					nozzleTemp: data.nozzle_temper,
+					nozzleTargetTemp: data.nozzle_target_temper,
+					changedAt: createdAt,
+				},
+			],
+			tempLastUpdatedAt: new Date(),
 			errorCodes: data.hms.map(hmsCode => ({
 				attr: hmsCode.attr,
 				code: hmsCode.code,
@@ -66,6 +82,10 @@ export class Job {
 
 		const existingData = this._jobData
 		const currentDate = new Date()
+
+		const isP1Series = [PrinterModel.P1P, PrinterModel.P1S].includes(
+			this._jobData.printerModel
+		)
 
 		// update status history if the last entry isn't the same as the latest data
 		if (
@@ -100,6 +120,32 @@ export class Job {
 				stage: data.stg_cur,
 				changedAt: currentDate,
 			})
+		}
+
+		// update temperature history if the last entry isn't the same as the latest data and the last update was more than 5 seconds ago
+		const isAnyDataAvailable = Boolean(
+			data.bed_temper ||
+				data.bed_target_temper ||
+				(isP1Series ? data.frame_temper : data.chamber_temper) ||
+				data.nozzle_temper ||
+				data.nozzle_target_temper
+		)
+		const has5SecondsPassed =
+			existingData.tempLastUpdatedAt.getTime() + 5000 < currentDate.getTime()
+
+		if (isAnyDataAvailable && has5SecondsPassed) {
+			const interiorTemp = isP1Series ? data.frame_temper : data.chamber_temper
+			const lastTempData = existingData.temperatureHistory.at(-1)!
+
+			existingData.temperatureHistory.push({
+				bedTemp: data.bed_temper ?? lastTempData.bedTemp,
+				bedTargetTemp: data.bed_target_temper ?? lastTempData.bedTargetTemp,
+				interiorTemp: interiorTemp ?? lastTempData.interiorTemp,
+				nozzleTemp: data.nozzle_temper ?? lastTempData.nozzleTemp,
+				nozzleTargetTemp: data.nozzle_target_temper ?? lastTempData.nozzleTargetTemp,
+				changedAt: currentDate,
+			})
+			existingData.tempLastUpdatedAt = currentDate
 		}
 
 		const newData = {
@@ -143,6 +189,10 @@ export interface JobData {
 	 * The ID of the printer who created this job.
 	 */
 	printerId: string
+	/**
+	 * The model of the printer who created this job.
+	 */
+	printerModel: PrinterModel
 	/**
 	 * The name of the job.
 	 *
@@ -209,6 +259,14 @@ export interface JobData {
 	 */
 	printingStageHistory: PrintingStageHistoryItem[]
 	/**
+	 * Stores the temperature changes throughout the job. Updated every 5 seconds while printing.
+	 */
+	temperatureHistory: TemperatureHistoryItem[]
+	/**
+	 * The last time the temperature was updated. Used internally to ensure that we only update every 5 seconds.
+	 */
+	tempLastUpdatedAt: Date
+	/**
 	 * The HMS error codes the printer encountered while printing the Job.
 	 */
 	errorCodes: HMSCodeHistory[]
@@ -240,6 +298,18 @@ interface SpeedLevelHistoryItem {
  */
 interface PrintingStageHistoryItem {
 	stage: PrintStage
+	changedAt: Date
+}
+
+interface TemperatureHistoryItem {
+	bedTemp: number
+	bedTargetTemp: number
+	/**
+	 * `frame_temper` or `chamber_temper` depending on the printer model.
+	 */
+	interiorTemp: number
+	nozzleTemp: number
+	nozzleTargetTemp: number
 	changedAt: Date
 }
 
