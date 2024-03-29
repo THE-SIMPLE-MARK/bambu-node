@@ -709,9 +709,9 @@ export interface AMSTray {
 	 */
 	tray_sub_brands: string
 	/**
-	 * No use cases are known.
+	 * The type of filament loaded into the tray (filament slot).
 	 */
-	tray_type: string
+	tray_type: FilamentType
 	/**
 	 * Unknown. Bambu Studio appears to do nothing with it.
 	 */
@@ -826,6 +826,35 @@ export enum UpgradeDisplayState {
 	UPGRADING = 2,
 	UPGRADE_FINISHED = 3,
 }
+
+export enum GenericFilamentType {
+	PLA = "PLA",
+	ABS = "ABS",
+	TPU = "TPU",
+	PC = "PC",
+	ASA = "ASA",
+	PA_CF = "PA-CF",
+	PA6_CF = "PA6-CF",
+	PET_CF = "PET-CF",
+	PETG = "PETG",
+	PETG_CF = "PETG-CF",
+	PLA_AERO = "PLA-AERO",
+	PLA_CF = "PLA-CF",
+	PPA_CF = "PPA-CF",
+	PPA_GF = "PPA-GF",
+	PA = "PA",
+	HIPS = "HIPS",
+	PPS = "PPS",
+	PPS_CF = "PPS-CF",
+	PVA = "PVA",
+}
+
+export enum BambuFilamentType {
+	PLA_S = "PLA-S",
+	PA_S = "PLA-S",
+}
+
+export type FilamentType = GenericFilamentType | BambuFilamentType
 
 export function isPushAllCommand(data: PrintMessageCommand): data is PushAllResponse {
 	return data.command === "push_status" && Object.keys(data).length >= 40
