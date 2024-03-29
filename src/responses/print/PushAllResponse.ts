@@ -731,17 +731,12 @@ export interface AMSTray {
  */
 export interface ExternalTray extends AMSTray {
 	/**
-	 * Unused.
-	 */
-	bed_temp: "0"
-	/**
-	 * Unused.
-	 */
-	bed_temp_type: "0"
-	/**
 	 * Unknown. Bambu Studio appears to do nothing with it.
 	 */
 	cols: StringNumber[]
+	/**
+	 * The ID of the tray.
+	 */
 	id: "254"
 	/**
 	 * The loaded filament's "k" value (manually set in Bambu Studio).
@@ -751,34 +746,6 @@ export interface ExternalTray extends AMSTray {
 	 * The loaded filament's "n" value (manually set in Bambu Studio).
 	 */
 	n: number
-	nozzle_temp_max: StringNumber
-	nozzle_temp_min: StringNumber
-	remain: 0
-	/**
-	 * The UID of the filament's NFC that was manually added in Bambu Studio.
-	 *
-	 * Uses:
-	 * - Check if filament's manufacturer is Bambu Lab: https://github.com/bambulab/BambuStudio/blob/master/src/slic3r/GUI/DeviceManager.cpp#L1090-L1101
-	 *
-	 * TODO: Extract when received from printer / provide helper function to do so.
-	 */
-	tag_uid: string
-	/**
-	 * Unknown.
-	 *
-	 * Perhaps the color of the printing plate. (?)
-	 */
-	tray_color: string
-	tray_diameter: StringNumber
-	tray_id_name: string
-	tray_info_idx: string
-	tray_sub_brands: string
-	tray_temp: StringNumber
-	tray_time: StringNumber
-	tray_type: string
-	tray_uuid: string
-	tray_weight: "0"
-	xcam_info: string
 }
 
 /**
