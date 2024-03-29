@@ -6,7 +6,6 @@ const FILE_EXT_REGEX = new RegExp(/\.[^/.]+$/)
 
 /**
  * Represents a single print job.
- *
  */
 export class Job {
 	private _jobData: JobData
@@ -30,6 +29,7 @@ export class Job {
 			totalLayerNumber: data.total_layer_num,
 			totalPrintTime: data.mc_remaining_time,
 			status: data.gcode_state,
+			stage: data.stg_cur,
 			percentDone: data.mc_percent,
 			layerNumber: data.layer_num,
 			remainingTime: data.mc_remaining_time,
@@ -150,6 +150,7 @@ export class Job {
 
 		const newData = {
 			status: data.gcode_state ?? existingData.status,
+			stage: data.stg_cur ?? existingData.stage,
 			percentDone: data.mc_percent ?? existingData.percentDone,
 			layerNumber: data.layer_num ?? existingData.layerNumber,
 			remainingTime: data.mc_remaining_time ?? existingData.remainingTime,
@@ -229,6 +230,10 @@ export interface JobData {
 	 * The status of the job (printer).
 	 */
 	status: PushAllResponse["gcode_state"]
+	/**
+	 * The current stage of the print job.
+	 */
+	stage: PrintStage
 	/**
 	 * The % of the print done from the job.
 	 */
