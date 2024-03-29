@@ -162,7 +162,7 @@ export interface PushAllResponse extends PrintMessageCommand {
 	/**
 	 * Fan speed in %
 	 *
-	 * Heatbreak fan: The smaller fan on the hotend itself
+	 * Heat break fan: The smaller fan on the hotend itself
 	 */
 	heatbreak_fan_speed: StringNumberRange<0, 100>
 	/**
@@ -689,25 +689,30 @@ export interface AMSTray {
 	 */
 	tag_uid: string
 	/**
-	 * The color of the tray (build plate?). No use cases are known.
+	 * The color of the filament loaded in HEX color code.
 	 */
 	tray_color: string
 	/**
-	 * The diameter of the tray (build plate?). No use cases are known.
+	 * The diameter of the spool loaded.
 	 */
-	tray_diameter: string
+	tray_diameter: 1.75
 	/**
 	 * Unknown. Bambu Studio appears to do nothing with it.
 	 */
 	tray_id_name: string
 	/**
-	 * No use cases are known.
+	 * The ID of the base config file for the filament.
+	 *
+	 * Uses:
+	 * - Associate the filament loaded with it's complete brand name.
+	 *
+	 * Config files can be found here: https://github.com/bambulab/BambuStudio/tree/master/resources/profiles/BBL/filament
 	 */
 	tray_info_idx: string
 	/**
 	 * No use cases are known.
 	 */
-	tray_sub_brands: string
+	tray_sub_brands: ""
 	/**
 	 * The type of filament loaded into the tray (filament slot).
 	 */
