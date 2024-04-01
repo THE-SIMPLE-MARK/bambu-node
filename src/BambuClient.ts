@@ -288,7 +288,7 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 					...data.print,
 				}
 
-				this.emit("printer:dataUpdate", this._printerData)
+				this.emit("printer:dataUpdate", this._printerData, data.print)
 
 				// printer status updates and job creation
 				if (data.print.gcode_state && data.print.gcode_state !== this._printerStatus) {
@@ -392,11 +392,10 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 			if (isGetVersionCommand(data.info)) {
 				// merge the new data with the old data (without duplicates)
-				this._printerData.modules = [
-					...new Set([...this._printerData.modules, ...data.info.module]),
-				]
+				const newData = [...new Set([...this._printerData.modules, ...data.info.module])]
+				this._printerData.modules = newData
 
-				this.emit("printer:dataUpdate", this._printerData)
+				this.emit("printer:dataUpdate", this._printerData, { modules: newData })
 
 				// figure out the printer version and add it to the printer data
 				// we do this by checking the serial number of OTA module
@@ -419,7 +418,9 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 					this._printerData.model = PrinterModel.A1M
 				else throw new Error("Printer model not supported!")
 
-				this.emit("printer:dataUpdate", this._printerData)
+				this.emit("printer:dataUpdate", this._printerData, {
+					model: this._printerData.model,
+				})
 			}
 		}
 	}

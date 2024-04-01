@@ -9,7 +9,7 @@ export interface BambuClientEvents {
 	"client:connect": []
 	"client:disconnect": [isDisconnectOffline: boolean]
 	"client:error": [error: Error]
-	"printer:dataUpdate": [data: PrinterData]
+	"printer:dataUpdate": [data: PrinterData, updatePackage: Partial<PrinterData>]
 	"printer:statusUpdate": [
 		oldStatus: BambuClientPrinterStatus,
 		newStatus: BambuClientPrinterStatus,
