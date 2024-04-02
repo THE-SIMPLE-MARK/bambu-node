@@ -8,6 +8,7 @@ import {
 } from "./responses"
 
 export type StringNumber = `${number}`
+export type StringBoolean = `${boolean}`
 
 export type NumberRange<
 	start extends number,

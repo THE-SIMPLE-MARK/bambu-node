@@ -1,5 +1,6 @@
 import { PrintMessageCommand } from "./PrintMessage"
-import { StringNumber, StringNumberRange, NumberRange } from "src/types"
+import { StringNumber, StringNumberRange, NumberRange, StringBoolean } from "src/types"
+import filamentConfigs from "src/utils/filamentConfigs.json"
 
 /**
  * Reports all sensors and statuses of the printer.
@@ -860,6 +861,75 @@ export enum BambuFilamentType {
 }
 
 export type FilamentType = GenericFilamentType | BambuFilamentType
+
+/**
+ * Contains basic data about a filament, which is then extended by the final product.
+ */
+export interface BaseFilamentConfig {
+	type: "filament"
+	name: string
+	inherits: string
+	from: string
+	instantiation: StringBoolean
+	fan_cooling_layer_time: [StringNumber]
+	filament_max_volumetric_speed: [StringNumber]
+	filament_density: [StringNumber]
+	filament_cost: [StringNumber]
+	cool_plate_temp: [StringNumber]
+	eng_plate_temp: [StringNumber]
+	hot_plate_temp: [StringNumber]
+	textured_plate_temp: [StringNumber]
+	cool_plate_temp_initial_layer: [StringNumber]
+	eng_plate_temp_initial_layer: [StringNumber]
+	hot_plate_temp_initial_layer: [StringNumber]
+	textured_plate_temp_initial_layer: [StringNumber]
+	nozzle_temperature_initial_layer: [StringNumber]
+	reduce_fan_stop_start_freq: [StringNumber]
+	fan_min_speed: [StringNumber]
+	overhang_fan_threshold: [StringNumber]
+	close_fan_the_first_x_layers: [StringNumber]
+	nozzle_temperature: [StringNumber]
+	temperature_vitrification: [StringNumber]
+	nozzle_temperature_range_low: [StringNumber]
+	nozzle_temperature_range_high: [StringNumber]
+	slow_down_min_speed: [StringNumber]
+	slow_down_layer_time: [StringNumber]
+	additional_cooling_fan_speed: [StringNumber]
+	filament_start_gcode: [string]
+}
+
+/**
+ * The config files ending with @base
+ */
+export interface ExtendedFilamentConfig extends Partial<BaseFilamentConfig> {
+	type: "filament"
+	name: string
+	inherits: string
+	from: string
+	filament_id: string
+	setting_id: string
+}
+
+/**
+ * The final filament config data. Contains the inherited and @base file data.
+ */
+export interface FilamentConfig extends BaseFilamentConfig {
+	type: "filament"
+	name: string
+	inherits: string
+	from: string
+	filament_id: string
+	instantiation: StringBoolean
+	filament_cost: [StringNumber]
+	filament_vendor: [string]
+}
+
+// create a function which finds the config ID from filamentConfigs.json
+// and returns the config object
+export function getFilamentConfig(id: string): FilamentConfig | undefined {
+	// @ts-ignore - it will always return a value
+	return filamentConfigs[id]
+}
 
 export function isPushAllCommand(data: PrintMessageCommand): data is PushAllResponse {
 	return data.command === "push_status" && Object.keys(data).length >= 40
