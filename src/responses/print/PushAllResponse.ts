@@ -705,7 +705,7 @@ export interface AMSTray {
 	 * The ID of the base config file for the filament.
 	 *
 	 * Uses:
-	 * - Associate the filament loaded with it's complete brand name.
+	 * - Associate the filament loaded with it's complete brand name. Use the `getFilamentConfig` function for getting the config.
 	 *
 	 * Config files can be found here: https://github.com/bambulab/BambuStudio/tree/master/resources/profiles/BBL/filament
 	 */
@@ -925,9 +925,9 @@ export interface FilamentConfig extends BaseFilamentConfig {
  * @param id - The ID of the FilamentConfig to retrieve.
  * @returns The FilamentConfig object if found, otherwise undefined.
  */
-export function getFilamentConfig(id: string): FilamentConfig | undefined {
-	// @ts-ignore - it will always return a value
-	return filamentConfigs[id]
+export function getFilamentConfig(id: string): FilamentConfig | null {
+	// @ts-ignore - all of the properties should be there
+	return filamentConfigs[id as keyof typeof filamentConfigs] ?? null
 }
 
 export function isPushAllCommand(data: PrintMessageCommand): data is PushAllResponse {
