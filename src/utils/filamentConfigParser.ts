@@ -16,7 +16,9 @@ function parseConfigFiles(dir: string): Result {
 		const filePath = path.join(dir, file)
 		let fileData: ExtendedFilamentConfig = JSON.parse(fs.readFileSync(filePath, "utf-8"))
 
-		if (fileData.name.endsWith("@base") && fileData.inherits) {
+		if (!fileData.name.endsWith("@base") || fileData.name.includes("@BBL")) continue
+
+		if (fileData.inherits) {
 			const inheritsFilePath = path.join(dir, `${fileData.inherits}.json`)
 
 			if (fs.existsSync(inheritsFilePath)) {
