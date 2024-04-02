@@ -833,7 +833,7 @@ export enum UpgradeDisplayState {
 	UPGRADE_FINISHED = 3,
 }
 
-export enum GenericFilamentType {
+export enum FilamentType {
 	PLA = "PLA",
 	ABS = "ABS",
 	TPU = "TPU",
@@ -853,14 +853,10 @@ export enum GenericFilamentType {
 	PPS = "PPS",
 	PPS_CF = "PPS-CF",
 	PVA = "PVA",
-}
-
-export enum BambuFilamentType {
+	// bambu-specific filaments
 	PLA_S = "PLA-S",
 	PA_S = "PLA-S",
 }
-
-export type FilamentType = GenericFilamentType | BambuFilamentType
 
 /**
  * Contains basic data about a filament, which is then extended by the final product.
