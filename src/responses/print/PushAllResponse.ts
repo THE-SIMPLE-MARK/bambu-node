@@ -924,8 +924,11 @@ export interface FilamentConfig extends BaseFilamentConfig {
 	filament_vendor: [string]
 }
 
-// create a function which finds the config ID from filamentConfigs.json
-// and returns the config object
+/**
+ * Retrieves the FilamentConfig object associated with the specified ID.
+ * @param id - The ID of the FilamentConfig to retrieve.
+ * @returns The FilamentConfig object if found, otherwise undefined.
+ */
 export function getFilamentConfig(id: string): FilamentConfig | undefined {
 	// @ts-ignore - it will always return a value
 	return filamentConfigs[id]
