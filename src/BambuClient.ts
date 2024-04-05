@@ -23,6 +23,7 @@ import { Job } from "./Job"
 import { createId } from "@paralleldrive/cuid2"
 import sleep from "src/utils/sleep"
 import { BambuClientOptions } from "src/BambuClientOptions"
+import subtractObjects from "./utils/subtractObject"
 
 /**
  * Manages connectivity and messages from/to the printer.
@@ -375,9 +376,15 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 
 					// update job data
 					if (this.currentJob) {
+						const previousJobData = this.currentJob?.data
+
 						this.currentJob.update(data.print)
 
-						this.emit("job:update", this.currentJob)
+						this.emit(
+							"job:update",
+							this.currentJob,
+							subtractObjects(previousJobData, this.currentJob.data)
+						)
 					}
 				}
 			}

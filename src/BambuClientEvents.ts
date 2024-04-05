@@ -14,7 +14,7 @@ export interface BambuClientEvents {
 		oldStatus: BambuClientPrinterStatus,
 		newStatus: BambuClientPrinterStatus,
 	]
-	"job:update": [job: Job]
+	"job:update": [job: Job, updatePackage: Partial<Job>]
 	"job:start": [job: Job]
 	"job:pause": [job: Job, isClientOffline: boolean]
 	"job:offlineRecovery": [job: Job]
