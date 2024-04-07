@@ -1,11 +1,11 @@
 /**
- * Returns an object containing the properties that are present in `obj2` but not in `obj1`.
+ * Returns an object containing the properties that are present / different in `obj2` but not in `obj1`.
  *
  * @param obj1 - The first object to compare.
  * @param obj2 - The second object to compare.
- * @returns An object containing the properties that are present in `obj2` but not in `obj1`.
+ * @returns An object containing the properties that are present / different in `obj2` but not in `obj1`.
  */
-export default function getAddedProperties(
+export default function subtractObject(
 	obj1: Record<string, any>,
 	obj2: Record<string, any>
 ): Record<string, any> {
