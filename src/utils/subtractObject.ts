@@ -17,15 +17,25 @@ export default function getAddedProperties(
 		currentResult: Record<string, any>
 	) => {
 		for (const key in obj2) {
+			const differentObjValue = obj2[key]
+			const originalObjValue = obj1[key]
+
 			// If the key is in obj1 & values are the same => skip to the next iteration
 			if (key in obj1 && JSON.stringify(obj1[key]) === JSON.stringify(obj2[key])) {
 				continue
 			}
 
 			// If value is object => recurse into it
-			if (typeof obj2[key] === "object" && obj2[key] !== null && obj1[key] !== null) {
+			if (
+				typeof differentObjValue === "object" &&
+				differentObjValue !== null &&
+				originalObjValue !== null &&
+				!Array.isArray(differentObjValue)
+			) {
 				currentResult[key] = currentResult[key] || {}
+
 				checkDifferences(obj1[key], obj2[key], currentResult[key])
+
 				continue
 			}
 
