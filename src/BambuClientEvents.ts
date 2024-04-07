@@ -1,5 +1,5 @@
 import type { BambuClientPrinterStatus, IncomingMessageData, PrinterData } from "./types"
-import type { Job } from "src/Job"
+import type { Job, JobData } from "src/Job"
 
 export type FinishOutcome = "SUCCESS" | "FAILED" | "UNEXPECTED"
 
@@ -14,7 +14,7 @@ export interface BambuClientEvents {
 		oldStatus: BambuClientPrinterStatus,
 		newStatus: BambuClientPrinterStatus,
 	]
-	"job:update": [job: Job, updatePackage: Partial<Job>]
+	"job:update": [job: Job, updatePackage: Partial<JobData>]
 	"job:start": [job: Job]
 	"job:pause": [job: Job, isClientOffline: boolean]
 	"job:offlineRecovery": [job: Job]
