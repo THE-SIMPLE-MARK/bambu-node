@@ -366,6 +366,11 @@ export class BambuClient extends events.EventEmitter<keyof BambuClientEvents> {
 						(newStatus === "FINISH" || newStatus === "FAILED" || newStatus === "IDLE")
 					) {
 						// this usually only happens when the client connects, all of which we ignore
+					} else if (
+						(oldStatus === "FINISH" || newStatus === "FAILED") &&
+						newStatus === "IDLE"
+					) {
+						// this happens right before a job start, but since IDLE doesn't mean the print has started, we don't do anything
 					} else if (oldStatus !== newStatus) {
 						// does not match but not "caught" before
 						throw new Error("Edge case detected while updating printer status!")
